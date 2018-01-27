@@ -1,0 +1,126 @@
+package gui;
+
+
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import controlador.ControladorAppMusic;
+import dominio.Cancion;
+import dominio.EstiloMusical;
+
+
+@SuppressWarnings("serial")
+class PanelExplorar extends JPanel implements ActionListener {
+	
+	private JButton buscarButton;
+	private JButton cancelarButton;
+	private JComboBox<EstiloMusical> estilosCombo; 
+	private ControladorAppMusic controlador;
+	private JTextField textoInterprete;
+	private JTextField textoTitulo;
+	private PanelReproduccion panelRepr;
+	
+	public PanelExplorar() {
+		controlador=ControladorAppMusic.getUnicaInstancia();
+		textoInterprete = new JTextField("Interprete");
+		textoTitulo = new JTextField("Titulo");
+		fixedSize(textoInterprete, 150, 30);
+		fixedSize(textoTitulo, 150, 30);
+
+		estilosCombo = new JComboBox<>();
+		fixedSize(estilosCombo, 150, 30);
+		estilosCombo.setSelectedIndex(-1);
+		estilosCombo.setEditable(true);
+		actualizarEstilos();		
+		buscarButton = new JButton("Buscar");
+		buscarButton.setMargin(new Insets(2, 21, 2, 21));
+		cancelarButton = new JButton("Cancelar");
+		cancelarButton.setMargin(new Insets(2, 21, 2, 21));
+
+		
+		buscarButton.addActionListener(this);
+		cancelarButton.addActionListener(this);
+		
+
+		JPanel panelBusqueda = new JPanel();
+		JPanel panelBotones1 = new JPanel();
+		panelRepr=new PanelReproduccion();
+		
+
+		panelBusqueda.setLayout(new BoxLayout(panelBusqueda, BoxLayout.X_AXIS));
+		panelBusqueda.add(textoInterprete);
+		panelBusqueda.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelBusqueda.add(textoTitulo);
+		panelBusqueda.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelBusqueda.add(estilosCombo);
+
+		panelBotones1.setLayout(new BoxLayout(panelBotones1, BoxLayout.X_AXIS));
+		panelBotones1.add(buscarButton);
+		panelBotones1.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelBotones1.add(cancelarButton);
+
+		
+		setVisibilidad(false);
+
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(panelBusqueda);
+		add(Box.createRigidArea(new Dimension(50, 15)));
+		add(panelBotones1);
+		add(Box.createRigidArea(new Dimension(50, 20)));
+		add(panelRepr);
+		
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == buscarButton) {
+			List<Cancion> encontradas=controlador.buscarCanciones(textoTitulo.getText().trim(), textoInterprete.getText().trim(), (EstiloMusical)estilosCombo.getSelectedItem());
+			if(encontradas.isEmpty())
+				new PanelMensaje("No se ha encontrado ninguna coincidencia.", "Información", "info");
+			else
+			{
+				panelRepr.establecerCanciones(encontradas);
+				setVisibilidad(true);
+			}
+			
+		}
+
+		if (e.getSource() == cancelarButton) {
+			panelRepr.vaciar();
+			setVisibilidad(false);
+		}
+
+
+	}
+	
+	public void actualizarEstilos(){
+		estilosCombo.removeAllItems();
+		estilosCombo.addItem(new EstiloMusical("Estilo Musical"));
+		Collection<EstiloMusical> estilos=controlador.obtenerEstilos();
+		for(EstiloMusical estilo:estilos){
+			estilosCombo.addItem(estilo);
+		}	
+	}
+	
+	private void fixedSize(JComponent c, int x, int y) {
+		c.setMinimumSize(new Dimension(x, y));
+		c.setMaximumSize(new Dimension(x, y));
+		c.setPreferredSize(new Dimension(x, y));
+	}
+
+	private void setVisibilidad(boolean v) {
+		panelRepr.setVisible(v);
+	}
+
+}

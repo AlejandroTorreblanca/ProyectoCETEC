@@ -1,0 +1,79 @@
+package gui;
+
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Image;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class VentanaPrincipal extends JFrame{
+
+	private JPanel panelCentral;	
+	private PanelRegistro panelRegistro;
+	private PanelLogin panelLogin;
+	
+	private void initialize() {
+		
+		panelRegistro = new PanelRegistro(this);
+		panelLogin = new PanelLogin(this);
+		panelCentral = new JPanel();
+		
+		panelCentral.setLayout(new CardLayout());
+		panelCentral.add(panelLogin, "Login");
+		panelCentral.add(panelRegistro, "Registro");
+		
+	}
+	
+	public VentanaLogin()
+	{
+		initialize();
+		Toolkit miPantalla=Toolkit.getDefaultToolkit();
+		Dimension tamPantalla=miPantalla.getScreenSize();
+		int alturaPantalla=tamPantalla.height;
+		int anchoPantalla=tamPantalla.width;
+		setSize(anchoPantalla/2, (int)(alturaPantalla/2));
+		setLocation(anchoPantalla/4, alturaPantalla/4);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("APPMusic");
+		Image miIcono=miPantalla.getImage("Iconos/spotify.png");
+		setIconImage(miIcono);
+		setVisible(true);
+		add(panelCentral);
+		validate();
+		setResizable(false);
+	}
+	
+	public void setVentanaSecundaria(){
+		VentanaAplicacion.run(this);
+		window.setVisible(false);
+	}
+	
+	public void setPanelLogin(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Login");
+		validate();
+	}
+	
+	public void setPanelRegistro(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Registro");
+		validate();
+	}
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {					
+					window= new VentanaLogin();
+					window.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+}

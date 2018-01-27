@@ -1,0 +1,25 @@
+package gui;
+
+import java.awt.CardLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class VentanaPrincipal extends JFrame{
+
+	private JPanel panelCentral;
+	panelExplorar = new PanelExplorar(this);
+	
+private void initialize() {
+		
+		panelExplorar = new PanelRegistro(this);
+		panelLogin = new PanelLogin(this);
+		panelCentral = new JPanel();
+		
+		panelCentral.setLayout(new CardLayout());
+		panelCentral.add(panelLogin, "Login");
+		panelCentral.add(panelRegistro, "Registro");
+		
+	}
+
+}

@@ -1,0 +1,36 @@
+package gui;
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
+@SuppressWarnings("serial")
+public class ModeloTabla extends DefaultTableModel {
+	private String[] columnNames = { "Trabajador", "Horas"};
+
+	@Override
+	public boolean isCellEditable(int row, int column){
+		return false;
+	}
+	
+	@Override
+	public int getColumnCount() {
+		return columnNames.length;
+	}
+	
+	public String getColumnName(int column) {
+	    return columnNames[column];
+	}
+	
+	public void addFila(String str, int h){
+		Object [] nuevafila=new Object[2];
+		nuevafila[0]=str;
+		nuevafila[1]=h;
+		addRow(nuevafila);
+	}
+	
+	public String getTrabajadorSeleccionado(int row){
+		return (String)getValueAt(row, 0);	
+	}
+
+	
+}

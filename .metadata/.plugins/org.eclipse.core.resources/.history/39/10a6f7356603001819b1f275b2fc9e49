@@ -1,0 +1,25 @@
+package baseDatos;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class ControllerBD {
+
+	private final ConnectBD con;
+	
+	public ControllerBD(){
+		
+		this.con=new ConnectBD();	
+	}
+	
+	public void crearConexion() throws SQLException{
+		
+		this.con.EstablecerConexion();
+	}
+	
+	public ResultSet mandarSql(String sql)  throws SQLException{
+		
+		ResultSet aux=this.con.EjecutarSentencia(sql);
+		return aux;
+	}
+}

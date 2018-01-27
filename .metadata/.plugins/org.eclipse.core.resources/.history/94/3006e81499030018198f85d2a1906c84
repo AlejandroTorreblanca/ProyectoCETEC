@@ -1,0 +1,70 @@
+package gui;
+
+
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import baseDatos.ControllerBD;
+
+
+
+@SuppressWarnings("serial")
+class PanelInicial extends JPanel implements ActionListener {
+
+	private JButton buscarButton;
+	private JButton cancelarButton;
+	private JTextField textoTrabajador;
+	private JTextField textoTitulo;
+	
+	private void fixedSize(JComponent c, int x, int y) {
+		c.setMinimumSize(new Dimension(x, y));
+		c.setMaximumSize(new Dimension(x, y));
+		c.setPreferredSize(new Dimension(x, y));
+	}
+	
+	public PanelInicial() {
+		textoTrabajador = new JTextField("Trabajador");
+		textoTitulo = new JTextField("Titulo");
+		fixedSize(textoTrabajador, 150, 30);
+		fixedSize(textoTitulo, 150, 30);
+
+		buscarButton = new JButton("Buscar");
+		buscarButton.setMargin(new Insets(2, 21, 2, 21));
+		cancelarButton = new JButton("Cancelar");
+		cancelarButton.setMargin(new Insets(2, 21, 2, 21));
+
+		
+		buscarButton.addActionListener(this);
+		cancelarButton.addActionListener(this);
+		
+		JPanel panelBusqueda = new JPanel();
+		
+		panelBusqueda.setLayout(new BoxLayout(panelBusqueda, BoxLayout.X_AXIS));
+		panelBusqueda.add(textoTrabajador);
+		panelBusqueda.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelBusqueda.add(textoTitulo);
+		
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(panelBusqueda);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == buscarButton) {
+
+		}
+	}
+	
+	
+}
