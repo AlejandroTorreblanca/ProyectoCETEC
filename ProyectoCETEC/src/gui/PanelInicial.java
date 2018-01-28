@@ -29,7 +29,7 @@ import baseDatos.ControllerBD;
 import controlador.Controlador;
 
 @SuppressWarnings("serial")
-class PanelInicial extends JPanel implements ActionListener {
+class PanelInicial extends JPanel implements ActionListener, KeyListener {
 
 	private Controlador controlador;
 	private JButton buscarButton;
@@ -55,38 +55,8 @@ class PanelInicial extends JPanel implements ActionListener {
 		fixedSize(textoOperario, 150, 30);
 		textoTrabajo = new JTextField("");
 		fixedSize(textoTrabajo, 150, 30);
-		textoTrabajo.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER)
-					buscarButton.doClick();
-			}
-		});
-		textoOperario.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER)
-					buscarButton.doClick();
-			}
-		});
+		textoTrabajo.addKeyListener(this);
+		textoOperario.addKeyListener(this);
 
 		buscarButton = new JButton("Buscar");
 		buscarButton.setMargin(new Insets(2, 21, 2, 21));
@@ -104,14 +74,6 @@ class PanelInicial extends JPanel implements ActionListener {
 		tabla.setCellSelectionEnabled(false);
 		tabla.setRowSelectionAllowed(true);
 		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tabla.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-
-				}
-			}
-		});
 
 		JPanel panelBusqueda = new JPanel();
 		JPanel panelBotones1 = new JPanel();
@@ -145,23 +107,26 @@ class PanelInicial extends JPanel implements ActionListener {
 			String nOperario = textoOperario.getText();
 			String nTrabajo = textoTrabajo.getText();
 			String str = "OPERARIO=" + nOperario + " AND TRABAJO=" + nTrabajo;
+
 			ResultSet rs = null;
 			try {
-				rs = controlador.setStatementSelect("CTCMOV", str);
-			} catch (SQLException e2) {
-				new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.",
-						"Error", "error");
-			}
-			int totalHoras = 0;
-			String nombre = "";
-			try {
-				while (rs.next()) {
-					totalHoras += rs.getInt("HORAS");
-					nombre = rs.getString("DESCRIPCION");
+				if (!((nOperario.compareTo("") == 0) || (nTrabajo.compareTo("") == 0))) {
+					rs = controlador.setStatementSelect("CTCMOV", str);
+					int totalHoras = 0;
+					String nombre = "";
+					while (rs.next()) {
+						totalHoras += rs.getInt("HORAS");
+						nombre = rs.getString("DESCRIPCION");
+					}
+					modelo.addFila(nOperario, nTrabajo, nombre, totalHoras);
 				}
-				modelo.addFila(nOperario,nTrabajo, nombre, totalHoras);
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+				else
+					new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.", "Error",
+							"error");
+			} catch (SQLException e2) {
+				new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.", "Error",
+						"error");
+				e2.printStackTrace();
 			}
 		}
 
@@ -169,6 +134,23 @@ class PanelInicial extends JPanel implements ActionListener {
 			while (modelo.getRowCount() > 0)
 				modelo.removeRow(0);
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER)
+			buscarButton.doClick();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

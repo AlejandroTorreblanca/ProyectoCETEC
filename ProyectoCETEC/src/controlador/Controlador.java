@@ -33,25 +33,42 @@ public class Controlador {
 		this.con.EstablecerConexion();
 	}
 
-	public ResultSet mandarSql(String sql) throws SQLException {
-		ResultSet aux = this.con.EjecutarSentencia(sql);
-		return aux;
-	}
-
-	public ResultSet mandarSql(PreparedStatement sql) throws SQLException {
-		ResultSet aux = this.con.EjecutarSentencia(sql);
-		return aux;
-	}
-
 	public ResultSet setStatementSelect(String str1, String str2) throws SQLException {
 		String str = "SELECT * FROM " + str1 + " WHERE " + str2;
 			ResultSet rs;
-			rs = mandarSql(str);
+			rs = this.con.ejecutarQuery(str);
 			return rs;
 
 	}
-
 	
+	public ResultSet setStatementSelectMAX() throws SQLException {
+		String str = "SELECT MAX(MOVIMIENTO) FROM CTCMOV" ;
+			ResultSet rs;
+			rs = this.con.ejecutarQuery(str);
+			return rs;
+
+	}
+	
+	public void setStatementUpdate(String str1, String str2, String str3) throws SQLException {
+		String str = "INSERT INTO " + str1 +" "+ str2 +" VALUES " + str3;
+		System.out.println(str);
+		this.con.ejecutarUpdate(str);
+
+	}
+	
+	public void getStatement() throws SQLException
+	{
+		 con.getStatement();
+	}
+	
+	public void ejecutarUpdate(PreparedStatement ps) throws SQLException
+	{
+		con.ejecutarUpdate(ps);
+	}
+
+	public void close(){
+		con.close();
+	}
 	
 	
 
