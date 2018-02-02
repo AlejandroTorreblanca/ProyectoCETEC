@@ -3,18 +3,14 @@ package controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import baseDatos.ConnectBD;
-import baseDatos.ControllerBD;
 
 public class Controlador {
 
 	private static Controlador unicaInstancia;
-	private ControllerBD controladorBD;
 	private final ConnectBD con;
 
 	private Controlador() {
-		controladorBD = new ControllerBD();
 		this.con = new ConnectBD();
 		try {
 			this.crearConexion();

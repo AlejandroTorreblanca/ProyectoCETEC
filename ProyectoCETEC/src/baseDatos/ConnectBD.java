@@ -10,6 +10,9 @@ import java.sql.SQLException;
  
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
  
@@ -48,7 +51,7 @@ public class ConnectBD {
                     ResultSet.CONCUR_READ_ONLY);
         }
         catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Error al crear el objeto sentencia "+e);
+            JOptionPane.showMessageDialog(null,"Error al conectar con la base de datos.\n "+e);
             return false;
         }
         return true;
@@ -65,20 +68,32 @@ public class ConnectBD {
     	PreparedStatement ps= conexion.prepareStatement(sql);
     	ps.setTimestamp(1, new Timestamp(utilDate.getTime()));
     	ps.executeUpdate();
-        //int i = this.sentencia.executeUpdate(sql);
     }
     
     public void getStatement() throws SQLException{
-    	java.util.Date utilDate = new java.util.Date();
-	    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-	    System.out.println("utilDate:" + utilDate);
-	    System.out.println("sqlDate:" + sqlDate);
-    	PreparedStatement ps= conexion.prepareStatement("INSERT INTO CTCMOV(MOVIMIENTO,FECHA) VALUES (?,?)");
-		ps.setString(1, "200032");
-		ps.setTimestamp(2, new Timestamp(utilDate.getTime()));
-		ps.executeUpdate();
+    	String str= "SELECT * FROM CTCMOV WHERE FECHA >= ? AND FECHA <= ?";
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	PreparedStatement ps= conexion.prepareStatement(str);
+    	String stringFechaConHora1 = "2015-09-15";
+    	String stringFechaConHora2 = "2017-01-15";
+    	try {
+			Date fechaConHora1 = sdf.parse(stringFechaConHora1);
+			Date fechaConHora2 = sdf.parse(stringFechaConHora2);
+			ps.setTimestamp(1, new Timestamp(fechaConHora1.getTime()));
+			ps.setTimestamp(2, new Timestamp(fechaConHora2.getTime()));
+			ResultSet rs;
+	        rs = ps.executeQuery();
+	        while(rs.next())
+	        {
+	        	System.out.println(rs.getString("FECHA"));
+	        }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
-    	//this.sentencia.executeUpdate("INSERT INTO CTCMOV(MOVIMIENTO,TRABAJO,OPERARIO,HORAS,DESCRIPCION) VALUES (200001,123,132,5,'jose, miguel')");
+    	
+       
     
     }
     

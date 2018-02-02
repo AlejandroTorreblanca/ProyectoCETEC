@@ -1,21 +1,17 @@
 package gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import baseDatos.ControllerBD;
 import controlador.Controlador;
 
 @SuppressWarnings("serial")
@@ -52,6 +47,9 @@ class PanelInicial extends JPanel implements ActionListener, KeyListener {
 		JLabel rotuloOperario = new JLabel("Identificador Operario: ", SwingConstants.CENTER);
 		JLabel rotuloTrabajo = new JLabel("Identificador Trabajo: ", SwingConstants.CENTER);
 		textoOperario = new JTextField("");
+		textoOperario.setText("Hola");
+		Font font = new Font("Action Man", Font.BOLD, 14);
+		textoOperario.setFont(font);
 		fixedSize(textoOperario, 150, 30);
 		textoTrabajo = new JTextField("");
 		fixedSize(textoTrabajo, 150, 30);
@@ -79,6 +77,7 @@ class PanelInicial extends JPanel implements ActionListener, KeyListener {
 		JPanel panelBotones1 = new JPanel();
 
 		panelBusqueda.setLayout(new BoxLayout(panelBusqueda, BoxLayout.X_AXIS));
+		
 		panelBusqueda.add(rotuloOperario);
 		panelBusqueda.add(Box.createRigidArea(new Dimension(10, 10)));
 		panelBusqueda.add(textoOperario);
@@ -118,7 +117,7 @@ class PanelInicial extends JPanel implements ActionListener, KeyListener {
 						totalHoras += rs.getInt("HORAS");
 						nombre = rs.getString("DESCRIPCION");
 					}
-					modelo.addFila(nOperario, nTrabajo, nombre, totalHoras);
+					modelo.addFila("12",nOperario, nTrabajo, nombre, totalHoras);
 				}
 				else
 					new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.", "Error",
