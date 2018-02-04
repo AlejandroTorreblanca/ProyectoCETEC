@@ -1,155 +1,111 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import controlador.Controlador;
-
 @SuppressWarnings("serial")
-class PanelInicial extends JPanel implements ActionListener, KeyListener {
+public class PanelInicial extends JPanel implements ActionListener{
 
-	private Controlador controlador;
-	private JButton buscarButton;
-	private JButton limpiarButton;
-	private JTextField textoOperario;
-	private JTextField textoTrabajo;
-	private JTable tabla;
-	private ModeloTabla modelo;
-	private JScrollPane scrollPane;
-
-	private void fixedSize(JComponent c, int x, int y) {
-		c.setMinimumSize(new Dimension(x, y));
-		c.setMaximumSize(new Dimension(x, y));
-		c.setPreferredSize(new Dimension(x, y));
-	}
-
-	public PanelInicial() {
-
-		controlador = Controlador.getUnicaInstancia();
-		JLabel rotuloOperario = new JLabel("Identificador Operario: ", SwingConstants.CENTER);
-		JLabel rotuloTrabajo = new JLabel("Identificador Trabajo: ", SwingConstants.CENTER);
-		textoOperario = new JTextField("");
-		textoOperario.setText("Hola");
-		Font font = new Font("Action Man", Font.BOLD, 14);
-		textoOperario.setFont(font);
-		fixedSize(textoOperario, 150, 30);
-		textoTrabajo = new JTextField("");
-		fixedSize(textoTrabajo, 150, 30);
-		textoTrabajo.addKeyListener(this);
-		textoOperario.addKeyListener(this);
-
-		buscarButton = new JButton("Buscar");
-		buscarButton.setMargin(new Insets(2, 21, 2, 21));
-		limpiarButton = new JButton("Limpiar");
-		limpiarButton.setMargin(new Insets(2, 21, 2, 21));
-
-		buscarButton.addActionListener(this);
-		limpiarButton.addActionListener(this);
-
-		modelo = new ModeloTabla();
-		tabla = new JTable(modelo);
-		tabla.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		tabla.setFillsViewportHeight(true);
-		scrollPane = new JScrollPane(tabla);
-		tabla.setCellSelectionEnabled(false);
-		tabla.setRowSelectionAllowed(true);
-		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-		JPanel panelBusqueda = new JPanel();
-		JPanel panelBotones1 = new JPanel();
-
-		panelBusqueda.setLayout(new BoxLayout(panelBusqueda, BoxLayout.X_AXIS));
+	private VentanaPrincipal window;
+	private JButton operariosButton;
+	private JButton trabajosButton;
+	private JButton conceptosButton;
+	private JButton coeficientesButton;
+	private JButton movimientosButton;
+	
+	public PanelInicial(VentanaPrincipal w) {
 		
-		panelBusqueda.add(rotuloOperario);
-		panelBusqueda.add(Box.createRigidArea(new Dimension(10, 10)));
-		panelBusqueda.add(textoOperario);
-		panelBusqueda.add(Box.createRigidArea(new Dimension(25, 25)));
-		panelBusqueda.add(rotuloTrabajo);
-		panelBusqueda.add(Box.createRigidArea(new Dimension(10, 10)));
-		panelBusqueda.add(textoTrabajo);
-		panelBusqueda.add(Box.createRigidArea(new Dimension(25, 25)));
-
-		panelBotones1.setLayout(new BoxLayout(panelBotones1, BoxLayout.X_AXIS));
-		panelBotones1.add(buscarButton);
-		panelBotones1.add(Box.createRigidArea(new Dimension(25, 25)));
-		panelBotones1.add(limpiarButton);
-
+		this.window=w;
+		trabajosButton = new JButton("Mantenimiento de Trabajos");
+		trabajosButton.setMargin(new Insets(2, 85, 2, 87));
+		trabajosButton.addActionListener(this);
+		
+		operariosButton = new JButton("Mantenimiento de Operarios");
+		operariosButton.setMargin(new Insets(2, 85, 2, 80));
+		operariosButton.addActionListener(this);
+		
+		conceptosButton = new JButton("Mantenimiento de Conceptos");
+		conceptosButton.setMargin(new Insets(2, 80, 2, 81));
+		conceptosButton.addActionListener(this);
+		
+		coeficientesButton = new JButton("Mantenimiento de Coeficientes");
+		coeficientesButton.setMargin(new Insets(2, 75, 2, 76));
+		coeficientesButton.addActionListener(this);
+		
+		movimientosButton = new JButton("Mantenimiento de Movimientos");
+		movimientosButton.setMargin(new Insets(2, 75, 2, 75));
+		movimientosButton.addActionListener(this);
+		
+		JPanel pNorte = new JPanel();
+		JPanel pEste = new JPanel();
+		JPanel pCentro = new JPanel();
+		JPanel pSur = new JPanel();
+		JPanel pOeste = new JPanel();
+		
+		JLabel rotuloSuperior = new JLabel("MENU DE OPCIONES", SwingConstants.CENTER);
+		Font font = new Font("Arial", Font.BOLD, 30);
+		rotuloSuperior.setFont(font);
+		pNorte.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pNorte.setMaximumSize(new Dimension(700, 100));
+		pNorte.add(rotuloSuperior);
+		pNorte.setBorder(BorderFactory.createLineBorder(Color.black));
+		
+		pCentro.setAlignmentY(Component.TOP_ALIGNMENT);
+		pCentro.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pCentro.setLayout(new BoxLayout(pCentro, BoxLayout.Y_AXIS));
+		pCentro.add(trabajosButton); 
+		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
+		pCentro.add(operariosButton);
+		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
+		pCentro.add(conceptosButton); 
+		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
+		pCentro.add(coeficientesButton); 
+		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
+		pCentro.add(movimientosButton);  
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(panelBusqueda);
-		add(Box.createRigidArea(new Dimension(50, 15)));
-		add(panelBotones1);
-		add(Box.createRigidArea(new Dimension(50, 15)));
-		add(scrollPane);
+		add(pNorte, BorderLayout.NORTH);
+		pOeste.add(Box.createRigidArea(new Dimension(100, 100)));
+		add(pOeste, BorderLayout.WEST);
+		
+		add(pCentro,BorderLayout.CENTER);
+		
+		pEste.add(Box.createRigidArea(new Dimension(100, 100)));
+		add(pEste, BorderLayout.EAST);
+		
+		pSur.add(Box.createRigidArea(new Dimension(50, 50)));
+		add(pSur, BorderLayout.SOUTH);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == buscarButton) {
-			String nOperario = textoOperario.getText();
-			String nTrabajo = textoTrabajo.getText();
-			String str = "OPERARIO=" + nOperario + " AND TRABAJO=" + nTrabajo;
-
-			ResultSet rs = null;
-			try {
-				if (!((nOperario.compareTo("") == 0) || (nTrabajo.compareTo("") == 0))) {
-					rs = controlador.setStatementSelect("CTCMOV", str);
-					int totalHoras = 0;
-					String nombre = "";
-					while (rs.next()) {
-						totalHoras += rs.getInt("HORAS");
-						nombre = rs.getString("DESCRIPCION");
-					}
-					modelo.addFila("12",nOperario, nTrabajo, nombre, totalHoras);
-				}
-				else
-					new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.", "Error",
-							"error");
-			} catch (SQLException e2) {
-				new PanelMensaje("Error en Los datos introducidos.\nCompruebe que los datos son correctos.", "Error",
-						"error");
-				e2.printStackTrace();
-			}
+		if (e.getSource()== operariosButton){
+			window.setPanelOperarios();
 		}
-
-		if (e.getSource() == limpiarButton) {
-			while (modelo.getRowCount() > 0)
-				modelo.removeRow(0);
+		else if (e.getSource()== trabajosButton){
+			window.setPanelTrabajos();
+		}
+		else if (e.getSource()== conceptosButton){
+//			window.setPanelOperario();
+		}
+		else if (e.getSource()== coeficientesButton){
+			window.setPanelCoeficientes();
+		}
+		else if (e.getSource()== movimientosButton){
+			window.setPanelMovimientos();
 		}
 	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER)
-			buscarButton.doClick();
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

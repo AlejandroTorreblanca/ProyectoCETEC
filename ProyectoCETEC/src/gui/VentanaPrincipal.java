@@ -12,45 +12,80 @@ import java.util.Calendar;
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import controlador.Controlador;
 
 public class VentanaPrincipal extends JFrame {
 
 	private static VentanaPrincipal window;
-	private JPanel panelCentral;
 	private PanelInicial panelInicial;
-	private PanelOperario panelOperario;
+	private PanelTrabajos panelTrabajos;
+	private PanelOperarios panelOperarios;
+	private PanelMovimientos panelMovimientos;
+	private PanelCoeficientes panelCoeficientes;
+	private JPanel panelCentral;
 
-	private void initialize() {
-
-		panelInicial = new PanelInicial();
+	
+	private void inicializarPaneles() {
+		panelTrabajos = new PanelTrabajos(this);
+		panelOperarios=new PanelOperarios(this);
+		panelInicial = new PanelInicial(this);
+		panelMovimientos = new PanelMovimientos(this);
+		panelCoeficientes = new PanelCoeficientes(this);
 		panelCentral = new JPanel();
-		panelOperario = new PanelOperario();
-
 		panelCentral.setLayout(new CardLayout());
 		panelCentral.add(panelInicial, "Inicial");
-		panelCentral.add(panelOperario, "Operario");
-
-	}
-	
-	public void inicializarPaneles() {
-
-		initialize();
+		panelCentral.add(panelTrabajos, "Trabajos");
+		panelCentral.add(panelOperarios, "Operarios");
+		panelCentral.add(panelMovimientos, "Movimientos");
+		panelCentral.add(panelCoeficientes, "Coeficientes");
+		
 		setLayout(new BorderLayout(10, 10));
-		PanelSupBotones panelS = new PanelSupBotones(this);
-		panelS.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 15));
-		add(panelS, BorderLayout.NORTH);
-
-		PanelIzqBotones panelIzq = new PanelIzqBotones(this);
-		add(panelIzq, BorderLayout.WEST);
-		add(panelCentral, BorderLayout.CENTER);
+		JPanel p0 = new JPanel();
+		p0.add(Box.createRigidArea(new Dimension(50, 50)));
+		add(p0, BorderLayout.NORTH);
 		JPanel p1 = new JPanel();
 		p1.add(Box.createRigidArea(new Dimension(100, 100)));
-		add(p1, BorderLayout.EAST);
+		add(p1, BorderLayout.WEST);
+		add(panelCentral,BorderLayout.CENTER);
 		JPanel p2 = new JPanel();
-		p2.add(Box.createRigidArea(new Dimension(50, 50)));
-		add(p2, BorderLayout.SOUTH);
+		p2.add(Box.createRigidArea(new Dimension(100, 100)));
+		add(p2, BorderLayout.EAST);
+		JPanel p3 = new JPanel();
+		p3.add(Box.createRigidArea(new Dimension(50, 50)));
+		add(p3, BorderLayout.SOUTH);
+		
+	}
+	
+	public void setPanelInicial(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Inicial");
+		validate();	
+	}
+	
+	public void setPanelOperarios(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Operarios");
+		validate();	
+	}
+	
+	public void setPanelTrabajos(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Trabajos");
+		validate();	
+	}
+	
+	public void setPanelCoeficientes(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Coeficientes");
+		validate();	
+	}
+	
+	public void setPanelMovimientos(){
+		CardLayout cl=(CardLayout)panelCentral.getLayout();
+		cl.show(panelCentral, "Movimientos");
+		validate();	
 	}
 	
 
@@ -67,23 +102,11 @@ public class VentanaPrincipal extends JFrame {
 		Image miIcono = miPantalla.getImage("Iconos/spotify.png");
 		setIconImage(miIcono);
 		setVisible(true);
-		add(panelCentral);
 		validate();
 		setResizable(true);
 		
 	}
 
-	public void setPanelInicial() {
-		CardLayout cl = (CardLayout) panelCentral.getLayout();
-		cl.show(panelCentral, "Inicial");
-		validate();
-	}
-
-	public void setPanelOperario() {
-		CardLayout cl = (CardLayout) panelCentral.getLayout();
-		cl.show(panelCentral, "Operario");
-		validate();
-	}
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

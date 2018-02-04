@@ -1,0 +1,85 @@
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+public class PanelInicial extends JPanel implements ActionListener{
+
+	private VentanaPrincipal window;
+	private JButton operariosButton;
+	private JButton trabajosButton;
+	private JButton conceptosButton;
+	private JButton coeficientesButton;
+	private JButton movimientosButton;
+	
+	public PanelInicial(VentanaPrincipal w) {
+		
+		this.window=w;
+		trabajosButton = new JButton("Mantenimiento de Trabajos");
+		trabajosButton.setMargin(new Insets(2, 100, 2, 28));
+		trabajosButton.addActionListener(this);
+		
+		operariosButton = new JButton("Mantenimiento de Operarios");
+		operariosButton.setMargin(new Insets(2, 100, 2, 28));
+		operariosButton.addActionListener(this);
+		
+		conceptosButton = new JButton("Mantenimiento de Conceptos");
+		conceptosButton.setMargin(new Insets(2, 100, 2, 28));
+		conceptosButton.addActionListener(this);
+		
+		coeficientesButton = new JButton("Mantenimiento de Coeficientes");
+		coeficientesButton.setMargin(new Insets(2, 100, 2, 28));
+		coeficientesButton.addActionListener(this);
+		
+		movimientosButton = new JButton("Mantenimiento de Movimientos");
+		movimientosButton.setMargin(new Insets(2, 100, 2, 28));
+		movimientosButton.addActionListener(this);
+		
+		JPanel pNorte = new JPanel();
+		JPanel pCentro = new JPanel();
+		JPanel aux = new JPanel();
+		aux.setLayout(new BoxLayout(aux, BoxLayout.Y_AXIS));
+		
+		JLabel rotuloSuperior = new JLabel("MENU DE OPCIONES", SwingConstants.CENTER);
+		Font font = new Font("Arial", Font.BOLD, 30);
+		rotuloSuperior.setFont(font);
+		pNorte.setBorder(BorderFactory.createLineBorder(Color.black) );
+		pNorte.setLayout(new BoxLayout(pNorte, BoxLayout.X_AXIS));
+		pNorte.add(add(Box.createRigidArea(new Dimension(50, 50))));
+		pNorte.add(rotuloSuperior);
+		pNorte.add(add(Box.createRigidArea(new Dimension(50, 50))));
+		
+//		pCentro.setAlignmentY(Component.TOP_ALIGNMENT);
+//		pCentro.setLayout(new BoxLayout(pCentro, BoxLayout.Y_AXIS));
+//		pCentro.add(trabajosButton); pCentro.add(operariosButton); pCentro.add(conceptosButton);  pCentro.add(coeficientesButton); pCentro.add(movimientosButton);  
+		
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(pNorte);
+		
+		add(Box.createRigidArea(new Dimension(50, 50)));
+		aux.add(trabajosButton);
+		aux.add(operariosButton);
+		aux.add(conceptosButton);
+		add(aux);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}

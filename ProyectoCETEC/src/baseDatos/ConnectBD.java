@@ -63,7 +63,11 @@ public class ConnectBD {
         return rs;
     }
     
-    public void ejecutarUpdate( String sql) throws SQLException{
+    public void ejecutarUpdate(String sql) throws SQLException{
+    	this.sentencia.executeUpdate(sql);
+    }
+    
+    public void ejecutarUpdateFecha(String sql) throws SQLException{
     	java.util.Date utilDate = new java.util.Date();
     	PreparedStatement ps= conexion.prepareStatement(sql);
     	ps.setTimestamp(1, new Timestamp(utilDate.getTime()));

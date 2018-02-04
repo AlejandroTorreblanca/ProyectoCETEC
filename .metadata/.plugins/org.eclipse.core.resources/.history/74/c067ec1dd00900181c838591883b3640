@@ -1,0 +1,74 @@
+package gui;
+
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+public class PanelCoeficientes extends JPanel implements ActionListener{
+
+	private VentanaPrincipal window;
+	private JTextField textoAño;
+	private JTextField textoPersonal;
+	private JTextField textoOficina;
+	private JTable tabla;
+	private ModeloTablaOperario modelo;
+	private JScrollPane scrollPane;
+	private JButton confirmarButton;
+	private JButton cancelarButton;
+	
+	private void fixedSize(JComponent c, int x, int y) {
+		c.setMinimumSize(new Dimension(x, y));
+		c.setMaximumSize(new Dimension(x, y));
+		c.setPreferredSize(new Dimension(x, y));
+	}
+	
+	public PanelCoeficientes(VentanaPrincipal w) {
+		
+		this.window=w;
+		JLabel rotuloAño = new JLabel("Año de Proceso: ", SwingConstants.CENTER);
+		
+		textoAño= new JTextField();
+		fixedSize(textoAño, 50, 24);
+		textoPersonal= new JTextField();
+		fixedSize(textoPersonal, 100, 24);
+		textoOficina= new JTextField();
+		fixedSize(textoOficina, 100, 24);
+		
+		confirmarButton = new JButton("Confirmar");
+		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
+		confirmarButton.addActionListener(this);
+		cancelarButton = new JButton("Cancelar");
+		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
+		cancelarButton.addActionListener(this);
+		
+		JPanel panelCentral = new JPanel();
+		JPanel panel1 = new JPanel();
+		JPanel panel2 = new JPanel();
+		
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+		panel2.add(rotuloAño);
+		panel2.add(Box.createRigidArea(new Dimension(17, 15)));
+		panel2.add(textoAño);
+		panel2.add(textoPersonal);
+		panel2.add(textoOficina);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
