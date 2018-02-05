@@ -3,6 +3,8 @@ package controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+
 import baseDatos.ConnectBD;
 
 public class Controlador {
@@ -36,7 +38,6 @@ public class Controlador {
 		else
 			str = "SELECT * FROM " + str1 + " WHERE " + str2;
 		
-		System.out.println("ss "+str);
 		ResultSet rs;
 		rs = this.con.ejecutarQuery(str);
 		return rs;
@@ -57,10 +58,24 @@ public class Controlador {
 
 	}
 	
+	public void setStatementInsert(String str1, String str2, String str3,Date fecha) throws SQLException {
+		String str = "INSERT INTO " + str1 +" "+ str2 +" VALUES " + str3;
+		System.out.println(str);
+		this.con.ejecutarUpdate(str,fecha);
+
+	}
+	
 	public void setStatementUpdate(String str1, String str2, String str3) throws SQLException {
 		String str = "UPDATE " + str1 +" SET "+ str2 + " WHERE "+str3 ;
 		System.out.println(str);
 		this.con.ejecutarUpdate(str);
+
+	}
+	
+	public void setStatementUpdate(String str1, String str2, String str3,Date fecha) throws SQLException {
+		String str = "UPDATE " + str1 +" SET "+ str2 + " WHERE "+str3 ;
+		System.out.println(str);
+		this.con.ejecutarUpdate(str,fecha);
 
 	}
 	

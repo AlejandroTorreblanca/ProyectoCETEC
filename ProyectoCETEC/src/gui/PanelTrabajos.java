@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -90,11 +91,12 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		textoTrabajador= new JTextField();
 		fixedSize(textoTrabajador, 50, 24);
 		textoNombre= new JTextField();
+		textoNombre.setEditable(false);
 		fixedSize(textoNombre, 450, 24);
 		textoEsti= new JTextField();
-		fixedSize(textoEsti, 50, 24);
+		fixedSize(textoEsti, 100, 24);
 		textoAdju= new JTextField();
-		fixedSize(textoAdju, 50, 24);
+		fixedSize(textoAdju, 100, 24);
 		textoCob= new JTextField();
 		fixedSize(textoCob, 25, 24);
 		textoFra= new JTextField();
@@ -113,11 +115,24 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER || e.getKeyCode()==KeyEvent.VK_SHIFT){
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
 					actualizarPlantilla();
 				}
-					
-				
+			}
+		});
+		textoTrabajador.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					textoNombre.setText(buscarTrabajador(textoTrabajador.getText()));
+				}
 			}
 		});
 		
@@ -267,7 +282,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()== confirmarButton){
-//			window.setPanelOperarios();
+			guardarCambios();
 		}
 		else if (e.getSource()== cancelarButton){
 			window.setPanelInicial();
@@ -275,27 +290,87 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		
 	}
 	
-	public void actualizarPlantilla(){
+	public void guardarCambios(){
 		String str="NRO_TRABAJO='"+textoCodigo.getText()+"'";
 		try {
 			ResultSet rs=controlador.setStatementSelect("CTCTRB",str );
-			if(rs.first()){
-				textoClave.setText(rs.getString("CLAVE_TRABAJO"));
-				textoDeno.setText(rs.getString("DENOMINACION"));
-				textoDescrip.setText(rs.getString("DESCRIPCION"));
-				textoCliente.setText(rs.getString("CLIENTE"));
-				textoTrabajador.setText(rs.getString("TRABAJADOR"));
-				textoEsti.setText(rs.getString("ESTIMADO"));
-				textoAdju.setText(rs.getString("ADJUDICADO"));
-				textoFra.setText(rs.getString("FACTURADO"));
-				textoCob.setText(rs.getString("COBRADO"));
-				textoObs.setText(rs.getString("OBSERVACIONES"));
-				fechaChooser1.setDate(rs.getDate("FECHA_CONTRATO"));
+			if(rs.first()){	//Update
+				String str1 = "CLAVE_TRABAJO='" + textoClave.getText() + "',FECHA_CONTRATO=?,DENOMINACION='"
+						+ textoDeno.getText() + "',DESCRIPCION='" + textoDescrip.getText() + "',CLIENTE='"
+						+ textoCliente.getText() + "',TRABAJADOR='" + textoTrabajador.getText() + "',ESTIMADO='"
+						+ textoEsti.getText() + "',ADJUDICADO='" + textoAdju.getText() + "',FACTURADO='"
+						+ textoFra.getText() + "',COBRADO='" + textoCob.getText() + "',OBSERVACIONES='" + textoObs.getText()
+						+ "'";
+				String str2="NRO_TRABAJO='"+textoCodigo.getText()+"'";
+				controlador.setStatementUpdate("CTCTRB", str1, str2,fechaChooser1.getDate());
+			}
+			else { // Insert
+				String str1 = "(NRO_TRABAJO,CLAVE_TRABAJO,FECHA_CONTRATO,DENOMINACION,DESCRIPCION,CLIENTE,"
+						+ "TRABAJADOR,ESTIMADO,ADJUDICADO,FACTURADO,COBRADO,OBSERVACIONES)";
+				String str2 = "('" + textoCodigo.getText() + "','" + textoClave.getText() + "', ? ,'"
+						+ textoDeno.getText() + "','" + textoDescrip.getText() + "','" + textoCliente.getText() + "','"
+						+ textoTrabajador.getText() + "','" + textoEsti.getText() + "','" + textoAdju.getText() + "','"
+						+ textoFra.getText() + "','" + textoCob.getText() + "','" + textoObs.getText() + "')";
+				controlador.setStatementInsert("CTCTRB", str1, str2,fechaChooser1.getDate());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void actualizarPlantilla(){
+		String str="NRO_TRABAJO='"+textoCodigo.getText()+"'";
+		try {
+			ResultSet rs=controlador.setStatementSelect("CTCTRB",str );
+			if(rs.first()){
+				double value1 = Double.parseDouble(rs.getString("ESTIMADO"));
+				double value2 = Double.parseDouble(rs.getString("ADJUDICADO"));
+				
+				textoClave.setText(rs.getString("CLAVE_TRABAJO"));
+				textoDeno.setText(rs.getString("DENOMINACION"));
+				textoDescrip.setText(rs.getString("DESCRIPCION"));
+				textoCliente.setText(rs.getString("CLIENTE"));
+				textoTrabajador.setText(rs.getString("TRABAJADOR"));
+				textoNombre.setText(buscarTrabajador(rs.getString("TRABAJADOR")));
+				textoEsti.setText(String.format("%.2f", value1));
+				textoAdju.setText(String.format("%.2f", value2));
+				textoFra.setText(rs.getString("FACTURADO"));
+				textoCob.setText(rs.getString("COBRADO"));
+				textoObs.setText(rs.getString("OBSERVACIONES"));
+				fechaChooser1.setDate(rs.getDate("FECHA_CONTRATO"));
+			}
+			else{
+				textoClave.setText("");
+				textoDeno.setText("");
+				textoDescrip.setText("");
+				textoCliente.setText("");
+				textoTrabajador.setText("");
+				textoNombre.setText("");
+				textoEsti.setText("");
+				textoAdju.setText("");
+				textoFra.setText("");
+				textoCob.setText("");
+				textoObs.setText("");
+				fechaChooser1.setDate(null);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public String buscarTrabajador(String codigo){
+		String str="OPERARIO='"+codigo+"'";
+		try {
+			ResultSet rs=controlador.setStatementSelect("CTCOPE",str );
+			if(rs.first())
+				return rs.getString("NOMBRE");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

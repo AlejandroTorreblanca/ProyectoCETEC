@@ -43,6 +43,7 @@ public class PanelCoeficientes extends JPanel implements ActionListener{
 	private JButton confirmarButton;
 	private JButton cancelarButton;
 	private String añoLibre;
+	private int maxFilas;
 	
 	private void fixedSize(JComponent c, int x, int y) {
 		c.setMinimumSize(new Dimension(x, y));
@@ -177,6 +178,7 @@ public class PanelCoeficientes extends JPanel implements ActionListener{
 	
 	public void inicializarTabla(){
 		try {
+			maxFilas=0;
 			ResultSet rs=controlador.setStatementSelect("CTCCOE", "");
 			int año=0;
 			String personal,oficina;
@@ -185,8 +187,10 @@ public class PanelCoeficientes extends JPanel implements ActionListener{
 				personal=rs.getString("PERSONAL");
 				oficina=rs.getString("OFICINA");
 				modelo.addFila(año, personal, oficina);
+				maxFilas++;
 			}
 			modelo.addFila(año+1, "", "");
+			maxFilas++;
 			añoLibre=Integer.toString(año+1);
 			
 		} catch (SQLException e) {
@@ -196,29 +200,12 @@ public class PanelCoeficientes extends JPanel implements ActionListener{
 		
 	}
 	
-	public void actualizarTabla(){
-		vaciarTabla();
-		try {
-			ResultSet rs=controlador.setStatementSelect("CTCCOE", "");
-			int año=0;
-			String personal,oficina;
-			while(rs.next()){
-				año=rs.getInt("AÑO");
-				personal=rs.getString("PERSONAL");
-				oficina=rs.getString("OFICINA");
-				modelo.addFila(año, personal, oficina);
-			}
-			modelo.addFila(año+1, "", "");
-			añoLibre=Integer.toString(año+1);
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void actualizarTexto(int i){
 		int filaSeleccionada=tabla.getSelectedRow()+i;
+		if(filaSeleccionada<0)
+			filaSeleccionada=0;
+		if(filaSeleccionada>=maxFilas)
+			filaSeleccionada=maxFilas-1;
 		int año=modelo.getAñoSeleccionado(filaSeleccionada);
 		String personal=modelo.getPersonalSeleccionado(filaSeleccionada);
 		String oficina=modelo.getOficinaSeleccionado(filaSeleccionada);
@@ -246,7 +233,8 @@ public class PanelCoeficientes extends JPanel implements ActionListener{
 					String str="('"+año+"','"+personal+"','"+oficina+"')";
 					controlador.setStatementInsert("CTCCOE", "(AÑO,PERSONAL,OFICINA)", str);
 				}
-				actualizarTabla();
+				vaciarTabla();
+				inicializarTabla();
 					
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block

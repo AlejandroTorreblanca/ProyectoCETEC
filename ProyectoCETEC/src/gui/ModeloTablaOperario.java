@@ -20,15 +20,19 @@ public class ModeloTablaOperario extends DefaultTableModel {
 	    return columnNames[column];
 	}
 	
-	public void addFila(int año, int precio){
+	public void addFila(int año, String precio){
 		Object [] nuevafila=new Object[2];
 		nuevafila[0]=año;
 		nuevafila[1]=precio;
 		addRow(nuevafila);
 	}
 	
-	public String getTrabajadorSeleccionado(int row){
-		return (String)getValueAt(row, 0);	
+	public int getAñoSeleccionado(int row){
+		return (int)getValueAt(row, 0);	
+	}
+	
+	public String getPrecioSeleccionado(int row){
+		return (String)getValueAt(row, 1);	
 	}
 
 	

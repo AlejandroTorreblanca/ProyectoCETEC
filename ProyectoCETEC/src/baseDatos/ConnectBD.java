@@ -67,12 +67,20 @@ public class ConnectBD {
     	this.sentencia.executeUpdate(sql);
     }
     
-    public void ejecutarUpdateFecha(String sql) throws SQLException{
-    	java.util.Date utilDate = new java.util.Date();
-    	PreparedStatement ps= conexion.prepareStatement(sql);
-    	ps.setTimestamp(1, new Timestamp(utilDate.getTime()));
-    	ps.executeUpdate();
-    }
+	public void ejecutarUpdate(String sql, Date fecha) throws SQLException {
+		if (fecha == null) {
+			java.util.Date utilDate = new java.util.Date();
+			PreparedStatement ps = conexion.prepareStatement(sql);
+			System.out.println(sql);
+			ps.setTimestamp(1, new Timestamp(utilDate.getTime()));
+			ps.executeUpdate();
+		}
+		else{
+			PreparedStatement ps = conexion.prepareStatement(sql);
+			ps.setTimestamp(1, new Timestamp(fecha.getTime()));
+			ps.executeUpdate();
+		}
+	}
     
     public void getStatement() throws SQLException{
     	String str= "SELECT * FROM CTCMOV WHERE FECHA >= ? AND FECHA <= ?";

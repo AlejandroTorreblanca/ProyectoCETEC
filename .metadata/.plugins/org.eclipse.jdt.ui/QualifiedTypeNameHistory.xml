@@ -15,7 +15,6 @@
 <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
 <fullyQualifiedTypeName name="java.awt.Font"/>
 <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
-<fullyQualifiedTypeName name="java.util.Date"/>
 <fullyQualifiedTypeName name="java.awt.FlowLayout"/>
 <fullyQualifiedTypeName name="gui.PanelInicial"/>
 <fullyQualifiedTypeName name="gui.PanelTrabajos"/>
@@ -31,5 +30,8 @@
 <fullyQualifiedTypeName name="gui.PanelCoeficientes"/>
 <fullyQualifiedTypeName name="javax.swing.JScrollPane"/>
 <fullyQualifiedTypeName name="java.sql.ResultSet"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="java.text.DecimalFormat"/>
+<fullyQualifiedTypeName name="com.toedter.calendar.JDateChooser"/>
 <fullyQualifiedTypeName name="controlador.Controlador"/>
 </qualifiedTypeNameHistroy>

@@ -8,6 +8,12 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,9 +30,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 
+import controlador.Controlador;
+
 @SuppressWarnings("serial")
 public class PanelOperarios extends JPanel implements ActionListener {
 
+	private Controlador controlador;
 	private VentanaPrincipal window;
 	private JTextField textoCodigo;
 	private JTextField textoDirec;
@@ -44,6 +53,8 @@ public class PanelOperarios extends JPanel implements ActionListener {
 	private JScrollPane scrollPane;
 	private JButton confirmarButton;
 	private JButton cancelarButton;
+	private String añoLibre;
+	private int maxFilas;
 	
 	private void fixedSize(JComponent c, int x, int y) {
 		c.setMinimumSize(new Dimension(x, y));
@@ -53,6 +64,7 @@ public class PanelOperarios extends JPanel implements ActionListener {
 	
 	public PanelOperarios(VentanaPrincipal w) {
 
+		controlador=Controlador.getUnicaInstancia();
 		this.window=w;
 		JLabel rotuloCodigo = new JLabel("Código: ", SwingConstants.CENTER);
 		JLabel rotuloDirec = new JLabel("Dirección: ", SwingConstants.CENTER);
@@ -81,9 +93,25 @@ public class PanelOperarios extends JPanel implements ActionListener {
 		textoTele2= new JTextField();
 		fixedSize(textoTele2, 100, 24);
 		textoAño= new JTextField();
-		fixedSize(textoAño, 25, 24);
+		fixedSize(textoAño, 50, 24);
 		textoPrecio= new JTextField();
 		fixedSize(textoPrecio, 75, 24);
+		
+		textoCodigo.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					actualizarPlantilla();
+				}
+			}
+		});
 		
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
@@ -147,6 +175,35 @@ public class PanelOperarios extends JPanel implements ActionListener {
 		tabla.setCellSelectionEnabled(false);
 		tabla.setRowSelectionAllowed(true);
 		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		tabla.addMouseListener(new MouseAdapter(){
+		    @Override
+		    public void mouseClicked(MouseEvent e){
+		        if(e.getClickCount()==1){
+		        	actualizarTexto(0);
+		        }
+		    }
+		});
+		tabla.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER || e.getKeyCode()==KeyEvent.VK_DOWN ){
+					actualizarTexto(1);
+				}
+				else if(e.getKeyCode()==KeyEvent.VK_UP){
+					actualizarTexto(-1);
+				}
+					
+				
+			}
+		});
 		
 		panel6.setLayout(new BoxLayout(panel6, BoxLayout.X_AXIS));
 		panel6.add(Box.createRigidArea(new Dimension(110, 15)));
@@ -221,6 +278,78 @@ public class PanelOperarios extends JPanel implements ActionListener {
 	
 	}
 	
+	public void actualizarPlantilla(){
+		String str="OPERARIO='"+textoCodigo.getText()+"'";
+		try {
+			ResultSet rs=controlador.setStatementSelect("CTCOPE",str );
+			if(rs.first()){
+				textoNombre.setText(rs.getString("NOMBRE"));
+				textoDirec.setText(rs.getString("DIRECCION"));
+				textoPobla1.setText(rs.getString("COD_POSTAL"));
+				textoPobla2.setText(rs.getString("POBLACION"));
+				textoProvi.setText(rs.getString("PROVINCIA"));
+				textoDni.setText(rs.getString("DNI/CIF"));
+				textoTele1.setText(rs.getString("TELEFONO_1"));
+				textoTele2.setText(rs.getString("TELEFONO_2"));
+				vaciarTabla();
+				inicializarTabla();
+//				textoAño.setText(rs.getString("OBSERVACIONES"));
+//				textoPrecio.setText(rs.getString("OBSERVACIONES"));
+			}
+			else{
+				textoNombre.setText("");
+				textoDirec.setText("");
+				textoPobla1.setText("");
+				textoPobla2.setText("");
+				textoProvi.setText("");
+				textoDni.setText("");
+				textoTele1.setText("");
+				textoTele2.setText("");
+				textoAño.setText("");
+				textoPrecio.setText("");
+				vaciarTabla();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void inicializarTabla(){
+		String str = "OPERARIO='" + textoCodigo.getText() + "'";
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCPRE", str);
+			int año=0;
+			while(rs.next()){
+				año=rs.getInt("AÑO");
+				double value1 = Double.parseDouble(rs.getString("PRECIO"));
+				modelo.addFila(año,String.format("%.2f", value1));
+				maxFilas++;
+			}
+			modelo.addFila(año+1, "");
+			maxFilas++;
+			añoLibre=Integer.toString(año+1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void actualizarTexto(int i){
+		int filaSeleccionada=tabla.getSelectedRow()+i;
+		if(filaSeleccionada<0)
+			filaSeleccionada=0;
+		if(filaSeleccionada>=maxFilas)
+			filaSeleccionada=maxFilas-1;
+		int año=modelo.getAñoSeleccionado(filaSeleccionada);
+		String precio=modelo.getPrecioSeleccionado(filaSeleccionada);
+		textoAño.setText(Integer.toString(año));
+		textoPrecio.setText(precio);
+	}
+	
+	public void vaciarTabla() {
+		while(modelo.getRowCount()>0) modelo.removeRow(0);
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
