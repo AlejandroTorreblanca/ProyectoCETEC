@@ -50,17 +50,17 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 	private JDateChooser fechaChooser1;
 	private JButton confirmarButton;
 	private JButton cancelarButton;
-	
+
 	private void fixedSize(JComponent c, int x, int y) {
 		c.setMinimumSize(new Dimension(x, y));
 		c.setMaximumSize(new Dimension(x, y));
 		c.setPreferredSize(new Dimension(x, y));
 	}
-	
+
 	public PanelTrabajos(VentanaPrincipal w) {
-		
-		this.window=w;
-		this.controlador=Controlador.getUnicaInstancia();
+
+		this.window = w;
+		this.controlador = Controlador.getUnicaInstancia();
 		JLabel rotuloCodigo = new JLabel("Código: ", SwingConstants.CENTER);
 		JLabel rotuloClave = new JLabel("Clave Trabajo: ", SwingConstants.CENTER);
 		JLabel rotuloFecha = new JLabel("Fecha de Contrato: ", SwingConstants.CENTER);
@@ -73,81 +73,85 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		JLabel rotuloCob = new JLabel("Cob: ", SwingConstants.CENTER);
 		JLabel rotuloFra = new JLabel("Fra: ", SwingConstants.CENTER);
 		JLabel rotuloObs = new JLabel("Observaciones: ", SwingConstants.CENTER);
-		
-		textoCodigo= new JTextField();
+
+		textoCodigo = new JTextField();
 		fixedSize(textoCodigo, 50, 24);
-		textoClave= new JTextField();
+		textoClave = new JTextField();
 		fixedSize(textoClave, 25, 24);
 		fechaChooser1 = new JDateChooser();
 		fechaChooser1.setDateFormatString("dd/MM/yyyy");
 		fixedSize(fechaChooser1, 100, 24);
-		textoDeno= new JTextField();
+		textoDeno = new JTextField();
 		fixedSize(textoDeno, 500, 24);
-		textoDescrip= new JTextArea();
+		textoDescrip = new JTextArea();
 		textoDescrip.setBorder(BorderFactory.createLineBorder(Color.gray));
 		textoDescrip.setLineWrap(true);
-		textoCliente= new JTextField();
+		textoCliente = new JTextField();
 		fixedSize(textoCliente, 500, 24);
-		textoTrabajador= new JTextField();
+		textoTrabajador = new JTextField();
 		fixedSize(textoTrabajador, 50, 24);
-		textoNombre= new JTextField();
+		textoNombre = new JTextField();
 		textoNombre.setEditable(false);
 		fixedSize(textoNombre, 450, 24);
-		textoEsti= new JTextField();
+		textoEsti = new JTextField();
 		fixedSize(textoEsti, 100, 24);
-		textoAdju= new JTextField();
+		textoAdju = new JTextField();
 		fixedSize(textoAdju, 100, 24);
-		textoCob= new JTextField();
+		textoCob = new JTextField();
 		fixedSize(textoCob, 25, 24);
-		textoFra= new JTextField();
+		textoFra = new JTextField();
 		fixedSize(textoFra, 25, 24);
-		textoObs= new JTextArea();
+		textoObs = new JTextArea();
 		textoObs.setBorder(BorderFactory.createLineBorder(Color.gray));
 		textoObs.setLineWrap(true);
-		
+
 		textoCodigo.addKeyListener(new KeyListener() {
-			
+
 			@Override
-			public void keyTyped(KeyEvent e) {}
-			
+			public void keyTyped(KeyEvent e) {
+			}
+
 			@Override
-			public void keyReleased(KeyEvent e) {}
-			
+			public void keyReleased(KeyEvent e) {
+			}
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					actualizarPlantilla();
 				}
 			}
 		});
 		textoTrabajador.addKeyListener(new KeyListener() {
-			
+
 			@Override
-			public void keyTyped(KeyEvent e) {}
-			
+			public void keyTyped(KeyEvent e) {
+			}
+
 			@Override
-			public void keyReleased(KeyEvent e) {}
-			
+			public void keyReleased(KeyEvent e) {
+			}
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					textoNombre.setText(buscarTrabajador(textoTrabajador.getText()));
 				}
 			}
 		});
-		
+
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
 		confirmarButton.addActionListener(this);
 		cancelarButton = new JButton("Cancelar");
 		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
 		cancelarButton.addActionListener(this);
-		
+
 		JScrollPane scrollDesc = new JScrollPane(textoDescrip);
 		JScrollPane scrollObs = new JScrollPane(textoObs);
 		fixedSize(scrollObs, 500, 100);
 		fixedSize(scrollDesc, 500, 100);
-		
+
 		JPanel panelCentral = new JPanel();
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
@@ -158,8 +162,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		JPanel panel7 = new JPanel();
 		JPanel panel8 = new JPanel();
 		JPanel panel9 = new JPanel();
-		
-		
+
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
 		panel1.add(rotuloCodigo);
 		panel1.add(Box.createRigidArea(new Dimension(62, 15)));
@@ -172,28 +175,28 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panel1.add(rotuloFecha);
 		panel1.add(Box.createRigidArea(new Dimension(15, 15)));
 		panel1.add(fechaChooser1);
-		
+
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
 		panel2.add(rotuloDeno);
 		panel2.add(Box.createRigidArea(new Dimension(20, 15)));
 		panel2.add(textoDeno);
-		
+
 		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
 		panel3.add(rotuloDescrip);
 		panel3.add(Box.createRigidArea(new Dimension(33, 15)));
 		panel3.add(scrollDesc);
-		
+
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
 		panel4.add(rotuloCliente);
 		panel4.add(Box.createRigidArea(new Dimension(62, 15)));
 		panel4.add(textoCliente);
-		
+
 		panel5.setLayout(new BoxLayout(panel5, BoxLayout.X_AXIS));
 		panel5.add(rotuloTrabajador);
 		panel5.add(Box.createRigidArea(new Dimension(39, 15)));
 		panel5.add(textoTrabajador);
 		panel5.add(textoNombre);
-		
+
 		panel6.setLayout(new BoxLayout(panel6, BoxLayout.X_AXIS));
 		panel6.add(rotuloEstimado);
 		panel6.add(Box.createRigidArea(new Dimension(25, 15)));
@@ -202,7 +205,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panel6.add(rotuloCob);
 		panel6.add(Box.createRigidArea(new Dimension(11, 15)));
 		panel6.add(textoCob);
-		
+
 		panel7.setLayout(new BoxLayout(panel7, BoxLayout.X_AXIS));
 		panel7.add(rotuloAdjudicado);
 		panel7.add(Box.createRigidArea(new Dimension(15, 15)));
@@ -211,17 +214,17 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panel7.add(rotuloFra);
 		panel7.add(Box.createRigidArea(new Dimension(15, 15)));
 		panel7.add(textoFra);
-		
+
 		panel8.setLayout(new BoxLayout(panel8, BoxLayout.X_AXIS));
 		panel8.add(rotuloObs);
 		panel8.add(Box.createRigidArea(new Dimension(15, 15)));
 		panel8.add(scrollObs);
-		
+
 		panel9.setLayout(new BoxLayout(panel9, BoxLayout.X_AXIS));
 		panel9.add(confirmarButton);
 		panel9.add(Box.createRigidArea(new Dimension(50, 15)));
 		panel9.add(cancelarButton);
-		
+
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 		panel1.setAlignmentX(LEFT_ALIGNMENT);
 		panel2.setAlignmentX(LEFT_ALIGNMENT);
@@ -231,7 +234,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panel6.setAlignmentX(LEFT_ALIGNMENT);
 		panel7.setAlignmentX(LEFT_ALIGNMENT);
 		panel8.setAlignmentX(LEFT_ALIGNMENT);
-		
+
 		panelCentral.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panelCentral.add(Box.createRigidArea(new Dimension(25, 25)));
 		panelCentral.add(panel1);
@@ -243,7 +246,6 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panelCentral.add(panel7);
 		panelCentral.add(panel8);
 
-		
 		JPanel pCentral = new JPanel();
 		JPanel pNorte = new JPanel();
 		JPanel pEste = new JPanel();
@@ -255,7 +257,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		pCentral.add(panelCentral);
 		pCentral.add(Box.createRigidArea(new Dimension(25, 25)));
 		pCentral.add(panel9);
-		
+
 		JLabel rotuloSuperior = new JLabel("MANTENIMIENTO DE TRABAJOS", SwingConstants.CENTER);
 		Font font = new Font("Arial", Font.BOLD, 30);
 		rotuloSuperior.setFont(font);
@@ -263,70 +265,58 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		pNorte.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pNorte.add(rotuloSuperior);
 		pNorte.setBorder(BorderFactory.createLineBorder(Color.black));
-		
+
 		setLayout(new BorderLayout(10, 10));
 		add(pNorte, BorderLayout.NORTH);
 		pOeste.add(Box.createRigidArea(new Dimension(100, 100)));
 		add(pOeste, BorderLayout.WEST);
-		
-		add(pCentral,BorderLayout.CENTER);
-		
+
+		add(pCentral, BorderLayout.CENTER);
+
 		pEste.add(Box.createRigidArea(new Dimension(100, 100)));
 		add(pEste, BorderLayout.EAST);
-		
+
 		pSur.add(Box.createRigidArea(new Dimension(10, 10)));
 		add(pSur, BorderLayout.SOUTH);
 	}
-	
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()== confirmarButton){
-			guardarCambios();
-		}
-		else if (e.getSource()== cancelarButton){
-			window.setPanelInicial();
-		}
-		
-	}
-	
-	public void guardarCambios(){
-		String str="NRO_TRABAJO='"+textoCodigo.getText()+"'";
+
+	public void guardarCambios() {
+		String str = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
 		try {
-			ResultSet rs=controlador.setStatementSelect("CTCTRB",str );
-			if(rs.first()){	//Update
+			ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
+			if (rs.first()) { // Update
 				String str1 = "CLAVE_TRABAJO='" + textoClave.getText() + "',FECHA_CONTRATO=?,DENOMINACION='"
 						+ textoDeno.getText() + "',DESCRIPCION='" + textoDescrip.getText() + "',CLIENTE='"
 						+ textoCliente.getText() + "',TRABAJADOR='" + textoTrabajador.getText() + "',ESTIMADO='"
-						+ textoEsti.getText() + "',ADJUDICADO='" + textoAdju.getText() + "',FACTURADO='"
-						+ textoFra.getText() + "',COBRADO='" + textoCob.getText() + "',OBSERVACIONES='" + textoObs.getText()
-						+ "'";
-				String str2="NRO_TRABAJO='"+textoCodigo.getText()+"'";
-				controlador.setStatementUpdate("CTCTRB", str1, str2,fechaChooser1.getDate());
-			}
-			else { // Insert
+						+ textoEsti.getText().replace(",", ".") + "',ADJUDICADO='"
+						+ textoAdju.getText().replace(",", ".") + "',FACTURADO='" + textoFra.getText() + "',COBRADO='"
+						+ textoCob.getText() + "',OBSERVACIONES='" + textoObs.getText() + "'";
+				String str2 = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
+				controlador.setStatementUpdate("CTCTRB", str1, str2, fechaChooser1.getDate());
+			} else { // Insert
 				String str1 = "(NRO_TRABAJO,CLAVE_TRABAJO,FECHA_CONTRATO,DENOMINACION,DESCRIPCION,CLIENTE,"
 						+ "TRABAJADOR,ESTIMADO,ADJUDICADO,FACTURADO,COBRADO,OBSERVACIONES)";
 				String str2 = "('" + textoCodigo.getText() + "','" + textoClave.getText() + "', ? ,'"
 						+ textoDeno.getText() + "','" + textoDescrip.getText() + "','" + textoCliente.getText() + "','"
-						+ textoTrabajador.getText() + "','" + textoEsti.getText() + "','" + textoAdju.getText() + "','"
-						+ textoFra.getText() + "','" + textoCob.getText() + "','" + textoObs.getText() + "')";
-				controlador.setStatementInsert("CTCTRB", str1, str2,fechaChooser1.getDate());
+						+ textoTrabajador.getText() + "','" + textoEsti.getText().replace(",", ".") + "','"
+						+ textoAdju.getText().replace(",", ".") + "','" + textoFra.getText() + "','"
+						+ textoCob.getText() + "','" + textoObs.getText() + "')";
+				controlador.setStatementInsert("CTCTRB", str1, str2, fechaChooser1.getDate());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	public void actualizarPlantilla(){
-		String str="NRO_TRABAJO='"+textoCodigo.getText()+"'";
+
+	public void actualizarPlantilla() {
+		String str = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
 		try {
-			ResultSet rs=controlador.setStatementSelect("CTCTRB",str );
-			if(rs.first()){
+			ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
+			if (rs.first()) {
 				double value1 = Double.parseDouble(rs.getString("ESTIMADO"));
 				double value2 = Double.parseDouble(rs.getString("ADJUDICADO"));
-				
+
 				textoClave.setText(rs.getString("CLAVE_TRABAJO"));
 				textoDeno.setText(rs.getString("DENOMINACION"));
 				textoDescrip.setText(rs.getString("DESCRIPCION"));
@@ -339,8 +329,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				textoCob.setText(rs.getString("COBRADO"));
 				textoObs.setText(rs.getString("OBSERVACIONES"));
 				fechaChooser1.setDate(rs.getDate("FECHA_CONTRATO"));
-			}
-			else{
+			} else {
 				textoClave.setText("");
 				textoDeno.setText("");
 				textoDescrip.setText("");
@@ -359,32 +348,36 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public String buscarTrabajador(String codigo){
-		String str="OPERARIO='"+codigo+"'";
+
+	public String buscarTrabajador(String codigo) {
+		String str = "OPERARIO='" + codigo + "'";
 		try {
-			ResultSet rs=controlador.setStatementSelect("CTCOPE",str );
-			if(rs.first())
+			ResultSet rs = controlador.setStatementSelect("CTCOPE", str);
+			if (rs.first())
 				return rs.getString("NOMBRE");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return "";
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == confirmarButton) {
+
+			String nombre = buscarTrabajador(textoTrabajador.getText());
+			if (nombre.compareTo("") == 0)
+				new PanelMensaje("El operario introducido no ha sido registrado.", "Error en los datos", "error");
+			else {
+				textoNombre.setText(nombre);
+				guardarCambios();
+			}
+
+		} else if (e.getSource() == cancelarButton) {
+			window.setPanelInicial();
+		}
+
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

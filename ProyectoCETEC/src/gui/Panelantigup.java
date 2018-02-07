@@ -32,7 +32,7 @@ class Panelantigup extends JPanel implements ActionListener, KeyListener {
 	private JTextField textoOperario;
 	private JTextField textoTrabajo;
 	private JTable tabla;
-	private ModeloTabla modelo;
+	private ModeloTablaMovimientos modelo;
 	private JScrollPane scrollPane;
 
 	private void fixedSize(JComponent c, int x, int y) {
@@ -64,7 +64,7 @@ class Panelantigup extends JPanel implements ActionListener, KeyListener {
 		buscarButton.addActionListener(this);
 		limpiarButton.addActionListener(this);
 
-		modelo = new ModeloTabla();
+		modelo = new ModeloTablaMovimientos();
 		tabla = new JTable(modelo);
 		tabla.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		tabla.setFillsViewportHeight(true);

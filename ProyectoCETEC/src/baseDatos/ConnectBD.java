@@ -63,6 +63,16 @@ public class ConnectBD {
         return rs;
     }
     
+	public ResultSet ejecutarQuery(String sql, Date fechaIni, Date fechaFin) throws SQLException {
+		ResultSet rs;
+		PreparedStatement ps = conexion.prepareStatement(sql);
+		ps.setTimestamp(1, new Timestamp(fechaIni.getTime()));
+		ps.setTimestamp(2, new Timestamp(fechaFin.getTime()));
+		rs = ps.executeQuery();
+		ps.close();
+		return rs;
+	}
+    
     public void ejecutarUpdate(String sql) throws SQLException{
     	this.sentencia.executeUpdate(sql);
     }
@@ -71,42 +81,40 @@ public class ConnectBD {
 		if (fecha == null) {
 			java.util.Date utilDate = new java.util.Date();
 			PreparedStatement ps = conexion.prepareStatement(sql);
-			System.out.println(sql);
 			ps.setTimestamp(1, new Timestamp(utilDate.getTime()));
 			ps.executeUpdate();
+			ps.close();
 		}
 		else{
 			PreparedStatement ps = conexion.prepareStatement(sql);
 			ps.setTimestamp(1, new Timestamp(fecha.getTime()));
 			ps.executeUpdate();
+			ps.close();
 		}
 	}
     
     public void getStatement() throws SQLException{
-    	String str= "SELECT * FROM CTCMOV WHERE FECHA >= ? AND FECHA <= ?";
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    	PreparedStatement ps= conexion.prepareStatement(str);
-    	String stringFechaConHora1 = "2015-09-15";
-    	String stringFechaConHora2 = "2017-01-15";
+    	SimpleDateFormat d = new SimpleDateFormat("dd-MM-yy");
     	try {
-			Date fechaConHora1 = sdf.parse(stringFechaConHora1);
-			Date fechaConHora2 = sdf.parse(stringFechaConHora2);
-			ps.setTimestamp(1, new Timestamp(fechaConHora1.getTime()));
-			ps.setTimestamp(2, new Timestamp(fechaConHora2.getTime()));
+			Date date = d.parse("31-03-2017");
+			String str = "SELECT * FROM CTCMOV WHERE FECHA>=?";
 			ResultSet rs;
-	        rs = ps.executeQuery();
+			System.out.println(str);
+			PreparedStatement ps = conexion.prepareStatement(str);
+			ps.setTimestamp(1, new Timestamp(date.getTime()));
+			rs=ps.executeQuery();
 	        while(rs.next())
 	        {
-	        	System.out.println(rs.getString("FECHA"));
+	        	System.out.println(rs.getString("MOVIMIENTO"));
 	        }
+	        ps.close();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
+		
     	
-       
-    
     }
     
     public void ejecutarUpdate(PreparedStatement ps) throws SQLException
