@@ -1,0 +1,403 @@
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+
+import com.toedter.calendar.JDateChooser;
+
+import controlador.Controlador;
+
+@SuppressWarnings("serial")
+public class PanelMovimientos extends JPanel implements ActionListener {
+
+	private VentanaPrincipal window;
+	private Controlador controlador;
+	private JButton confirmarButton;
+	private JButton cancelarButton;
+	private JTextField textoTrabajo;
+	private JTextField textoOperarioIni;
+	private JTextField textoOperarioFin;
+	private JTextField textoPersonalTotal;
+	private JTextField textoOficinaTotal;
+	private JTextField textoHoras;
+	private JTextField textoTotalProyecto;
+	private JTextField textoCostesPersonal;
+	private JTextField textoCostesOficina;
+	private JTextField textoCoefPersonal;
+	private JTextField textoCoefOficina;
+	private JDateChooser fechaChooser1;
+	private JDateChooser fechaChooser2;
+	private JTextField textoNombre;
+	private JTable tabla;
+	private ModeloTablaMovimientos modelo;
+	private JScrollPane scrollPane;
+
+	private void fixedSize(JComponent c, int x, int y) {
+		c.setMinimumSize(new Dimension(x, y));
+		c.setMaximumSize(new Dimension(x, y));
+		c.setPreferredSize(new Dimension(x, y));
+	}
+
+	public PanelMovimientos(VentanaPrincipal w) {
+
+		this.window = w;
+		controlador = Controlador.getUnicaInstancia();
+		JLabel rotuloTrabajo = new JLabel("Cod. Trabajo: ", SwingConstants.CENTER);
+		JLabel rotuloOperarioIni = new JLabel("Desde Operario: ", SwingConstants.CENTER);
+		JLabel rotuloOperarioFin = new JLabel("Hasta Operario: ", SwingConstants.CENTER);
+		JLabel rotuloFecha1 = new JLabel("Desde Fecha: ", SwingConstants.CENTER);
+		JLabel rotuloFecha2 = new JLabel("Hasta Fecha: ", SwingConstants.CENTER);
+		JLabel rotuloTotal = new JLabel("Total: ", SwingConstants.CENTER);
+		JLabel rotuloTotalProyecto = new JLabel("Total Proyecto: ", SwingConstants.CENTER);
+		JLabel rotuloPersonal = new JLabel("Personal ", SwingConstants.CENTER);
+		JLabel rotuloCoef = new JLabel("Total: ", SwingConstants.CENTER);
+		JLabel rotuloCostes = new JLabel("Personal ", SwingConstants.CENTER);
+		JLabel rotuloHoras = new JLabel("Total Horas: ", SwingConstants.CENTER);
+		JLabel rotuloOficina = new JLabel("Oficina ", SwingConstants.CENTER);
+		textoTrabajo = new JTextField("");
+		fixedSize(textoTrabajo, 50, 30);
+		textoOperarioIni = new JTextField("");
+		fixedSize(textoOperarioIni, 50, 30);
+		textoOperarioFin = new JTextField("");
+		fixedSize(textoOperarioFin, 50, 30);
+		textoCostesPersonal = new JTextField("");
+		fixedSize(textoCostesPersonal, 200, 30);
+		textoPersonalTotal = new JTextField("");
+		fixedSize(textoPersonalTotal, 200, 30);
+		textoCostesOficina = new JTextField("");
+		fixedSize(textoCostesOficina, 200, 30);
+		textoTotalProyecto = new JTextField("");
+		fixedSize(textoTotalProyecto, 200, 30);
+		textoCostesOficina = new JTextField("");
+		fixedSize(textoCostesOficina, 200, 30);
+		textoHoras = new JTextField("");
+		fixedSize(textoHoras, 100, 30);
+		textoNombre = new JTextField("");
+		textoNombre.setEditable(false);
+		fixedSize(textoNombre, 400, 30);
+		fechaChooser1 = new JDateChooser();
+		fechaChooser1.setDateFormatString("dd/MM/yyyy");
+		fixedSize(fechaChooser1, 100, 30);
+		fechaChooser2 = new JDateChooser();
+		fechaChooser2.setDateFormatString("dd/MM/yyyy");
+		fixedSize(fechaChooser2, 100, 30);
+
+		textoTrabajo.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//					inicializarDatos();
+				}
+			}
+		});
+
+		fechaChooser2.getDateEditor().getUiComponent().addKeyListener(new java.awt.event.KeyListener() {
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					vaciarTabla();
+					actualizarTabla();
+				}
+			}
+		});
+
+		modelo = new ModeloTablaMovimientos();
+		tabla = new JTable(modelo);
+		tabla.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		tabla.setFillsViewportHeight(true);
+		scrollPane = new JScrollPane(tabla);
+		scrollPane.setMaximumSize(new Dimension(1600, 350));
+		tabla.setCellSelectionEnabled(false);
+		tabla.setRowSelectionAllowed(true);
+		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		TableColumn columna = tabla.getColumn("Horas");
+		columna.setMaxWidth(50);
+		columna = tabla.getColumn("Fecha");
+		columna.setMaxWidth(100);
+		columna = tabla.getColumn("Operario");
+		columna.setMaxWidth(70);
+		columna = tabla.getColumn("Precio");
+		columna.setMaxWidth(100);
+		columna = tabla.getColumn("Importe");
+		columna.setMaxWidth(100);
+
+		ListSelectionModel cellSelectionModel = tabla.getSelectionModel();
+		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+//				actualizarTexto();
+			}
+		});
+
+		confirmarButton = new JButton("Imprimir");
+		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
+		confirmarButton.addActionListener(this);
+		cancelarButton = new JButton("Cancelar");
+		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
+		cancelarButton.addActionListener(this);
+
+		JPanel panelCentral = new JPanel();
+		JPanel panel1 = new JPanel();
+		JPanel panel2 = new JPanel();
+		JPanel panel3 = new JPanel();
+		JPanel panel4 = new JPanel();
+		JPanel panel5 = new JPanel();
+		JPanel panel6 = new JPanel();
+		JPanel panel7 = new JPanel();
+		JPanel panel8 = new JPanel();
+
+		panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
+		panel1.setAlignmentX(RIGHT_ALIGNMENT);
+		panel1.add(rotuloTrabajo);
+		panel1.add(textoTrabajo);
+		panel1.add(textoNombre);
+
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+		panel2.setAlignmentX(RIGHT_ALIGNMENT);
+		panel2.add(rotuloOperarioIni);
+		panel2.add(textoOperarioIni);
+		panel2.add(Box.createRigidArea(new Dimension(25, 30)));
+		panel2.add(rotuloFecha1);
+		panel2.add(fechaChooser1);
+
+		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
+		panel3.setAlignmentX(RIGHT_ALIGNMENT);
+		panel3.add(rotuloOperarioFin);
+		panel3.add(textoOperarioFin);
+		panel3.add(Box.createRigidArea(new Dimension(25, 30)));
+		panel3.add(rotuloFecha2);
+		panel3.add(fechaChooser2);
+
+		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
+		panel4.setAlignmentX(RIGHT_ALIGNMENT);
+		panel4.add(rotuloTotal);
+		panel4.add(textoPersonalTotal);
+
+		panel5.setLayout(new BoxLayout(panel5, BoxLayout.X_AXIS));
+		panel5.setAlignmentX(RIGHT_ALIGNMENT);
+		panel5.add(rotuloPersonal);
+		panel5.add(textoCostesPersonal);
+		
+		panel6.setLayout(new BoxLayout(panel6, BoxLayout.X_AXIS));
+		panel6.setAlignmentX(RIGHT_ALIGNMENT);
+		panel6.add(rotuloHoras);
+		panel6.add(textoHoras);
+		panel7.add(Box.createRigidArea(new Dimension(5, 20)));
+		panel6.add(rotuloOficina);
+		panel6.add(textoCostesOficina);
+
+		panel7.setLayout(new BoxLayout(panel7, BoxLayout.X_AXIS));
+		panel7.setAlignmentX(RIGHT_ALIGNMENT);
+		panel7.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel7.add(rotuloTotalProyecto);
+		panel7.add(textoTotalProyecto);
+		
+		panel8.setLayout(new BoxLayout(panel8, BoxLayout.X_AXIS));
+		panel8.setAlignmentX(RIGHT_ALIGNMENT);
+		panel8.add(Box.createRigidArea(new Dimension(160, 15)));
+		panel8.add(confirmarButton);
+		panel8.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel8.add(cancelarButton);
+		
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		panelCentral.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelCentral.add(panel1);
+		panelCentral.add(panel2);
+		panelCentral.add(panel3);
+		panelCentral.add(Box.createRigidArea(new Dimension(25, 15)));
+		panelCentral.add(scrollPane);
+		panelCentral.add(Box.createRigidArea(new Dimension(25, 15)));
+		panelCentral.add(panel4);
+		panelCentral.add(panel5);
+		panelCentral.add(panel6);
+		panelCentral.add(panel7);
+		panelCentral.add(Box.createRigidArea(new Dimension(50, 15)));
+		panelCentral.add(panel8);
+		
+		JPanel pNorte = new JPanel();
+
+		JLabel rotuloSuperior = new JLabel("CONSULTA DE MOVIMIENTOS", SwingConstants.CENTER);
+		Font font = new Font("Arial", Font.BOLD, 30);
+		rotuloSuperior.setFont(font);
+		pNorte.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pNorte.add(rotuloSuperior);
+		pNorte.setBorder(BorderFactory.createLineBorder(Color.black));
+
+		setLayout(new BorderLayout(10, 10));
+		add(pNorte, BorderLayout.NORTH);
+		add(Box.createRigidArea(new Dimension(30, 30)), BorderLayout.WEST);
+		add(Box.createRigidArea(new Dimension(50, 50)), BorderLayout.EAST);
+		add(Box.createRigidArea(new Dimension(50, 50)), BorderLayout.SOUTH);
+		add(panelCentral, BorderLayout.CENTER);
+	}
+
+	public String buscarTrabajo(String codigo) {
+		String str = "NRO_TRABAJO='" + codigo + "'";
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
+			if (rs.first())
+				return rs.getString("DENOMINACION");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public void actualizarTabla() {
+		SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+		String str1 = "OPERARIO='" + textoTrabajo.getText() + "' AND FECHA>=? AND FECHA<=?";
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCMOV", str1, fechaChooser1.getDate(),
+					fechaChooser2.getDate());
+			String operario, nombre;
+			int horas, codigo;
+			Date fecha;
+			while (rs.next()) {
+				codigo = rs.getInt("MOVIMIENTO");
+				operario = rs.getString("TRABAJO");
+				fecha = rs.getDate("FECHA");
+				nombre = rs.getString("DESCRIPCION");
+				horas = rs.getInt("HORAS");
+//				modelo.addFila(Integer.toString(codigo), operario, d.format(fecha), nombre, horas);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+//	public void guardarCambios() {
+//		// Guardamos en operarios
+//		String str = "MOVIMIENTO='" + xMov.getText() + "'";
+//		try {
+//			ResultSet rs = controlador.setStatementSelect("CTCMOV", str);
+//			int precio = buscarPrecio(textoOperario.getText());
+//			if (rs.first()) { // Update
+//				if (precio != -1) {
+//					int importe = Integer.parseInt(xHoras.getText()) * precio;
+//					String str1 = "TRABAJO='" + xTraba.getText() + "',FECHA=? ,OPERARIO='" + textoOperario.getText()
+//							+ "',HORAS='" + xHoras.getText() + "',DESCRIPCION='" + xNombre.getText() + "',PRECIO='"
+//							+ Integer.toString(precio) + "',IMPORTE='" + Integer.toString(importe) + "'";
+//					controlador.setStatementUpdate("CTCMOV", str1, str, xFecha.getDate());
+//				} else {
+//					Calendar calendar = Calendar.getInstance();
+//					calendar.setTime(new Date());
+//					new PanelMensaje("El usuario introducido no tiene asignado un precio para el año "
+//							+ Integer.toString(calendar.get(Calendar.YEAR)), "Error en los datos", "error");
+//				}
+//			} else { // Insert
+//				if (precio != -1) {
+//					int importe = Integer.parseInt(xHoras.getText()) * precio;
+//					String str1 = "(MOVIMIENTO,TRABAJO,FECHA,OPERARIO,HORAS,DESCRIPCION," + "PRECIO,IMPORTE)";
+//					String str2 = "('" + xMov.getText() + "','" + xTraba.getText() + "',?,'" + textoOperario.getText()
+//							+ "','" + xHoras.getText() + "','" + textoNombre.getText() + "','"
+//							+ Integer.toString(precio) + "','" + Integer.toString(importe) + "')";
+//					controlador.setStatementInsert("CTCMOV", str1, str2, xFecha.getDate());
+//				} else {
+//					Calendar calendar = Calendar.getInstance();
+//					calendar.setTime(new Date());
+//					new PanelMensaje("El usuario introducido no tiene asignado un precio para el año "
+//							+ Integer.toString(calendar.get(Calendar.YEAR)), "Error en los datos", "error");
+//				}
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+
+	public int buscarPrecio(String operario) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String str = "AÑO='" + Integer.toString(calendar.get(Calendar.YEAR)) + "' AND OPERARIO='" + operario + "'";
+
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCPRE", str);
+			if (rs.first())
+				return rs.getInt("PRECIO");
+			else
+				return -1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == confirmarButton) {
+//			guardarCambios();
+			if (modelo.getRowCount() > 0) {
+				vaciarTabla();
+				actualizarTabla();
+			}
+		} else if (e.getSource() == cancelarButton) {
+			window.setPanelInicial();
+		}
+
+	}
+
+	public void vaciarTabla() {
+		while (modelo.getRowCount() > 0)
+			modelo.removeRow(0);
+	}
+
+}
+

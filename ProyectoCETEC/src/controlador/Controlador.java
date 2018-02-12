@@ -58,10 +58,8 @@ public class Controlador {
 		rs = this.con.ejecutarQuery(str);
 		if(rs.first()){
 			return rs.getInt("C1")+1;
-			
 		}
 		return -1;
-
 	}
 
 	public void setStatementInsert(String str1, String str2, String str3) throws SQLException {

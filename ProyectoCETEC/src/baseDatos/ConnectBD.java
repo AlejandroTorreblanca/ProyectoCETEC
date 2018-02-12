@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -94,27 +95,19 @@ public class ConnectBD {
 	}
     
     public void getStatement() throws SQLException{
-    	SimpleDateFormat d = new SimpleDateFormat("dd-MM-yy");
-    	try {
-			Date date = d.parse("31-03-2017");
-			String str = "SELECT * FROM CTCMOV WHERE FECHA>=?";
-			ResultSet rs;
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTime(new Date());
+//			String str = "SELECT * FROM CTCMOV M,CTCPRE P WHERE M.OPERARIO=P.OPERARIO AND P.AÑO='"+Integer.toString(calendar.get(Calendar.YEAR))+"'";
+    		String str = "SELECT * FROM CTCMOV  WHERE OPERARIO>='0034'";
+			
+    		ResultSet rs;
 			System.out.println(str);
-			PreparedStatement ps = conexion.prepareStatement(str);
-			ps.setTimestamp(1, new Timestamp(date.getTime()));
-			rs=ps.executeQuery();
+			rs=this.sentencia.executeQuery(str);
 	        while(rs.next())
 	        {
-	        	System.out.println(rs.getString("MOVIMIENTO"));
+	        	System.out.println(rs.getString("MOVIMIENTO")+" "+rs.getString("OPERARIO"));
+	        	
 	        }
-	        ps.close();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-		
-    	
     }
     
     public void ejecutarUpdate(PreparedStatement ps) throws SQLException

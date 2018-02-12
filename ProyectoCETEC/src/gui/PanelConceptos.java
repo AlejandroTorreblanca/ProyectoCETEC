@@ -1,0 +1,264 @@
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+
+import controlador.Controlador;
+
+public class PanelConceptos extends JPanel implements ActionListener{
+
+	private VentanaPrincipal window;
+	private Controlador controlador;
+	private JTextField textoCD;
+	private JTextField textoDescrip;
+	private JTable tabla;
+	private ModeloTablaConceptos modelo;
+	private JScrollPane scrollPane;
+	private JButton confirmarButton;
+	private JButton cancelarButton;
+	
+	private void fixedSize(JComponent c, int x, int y) {
+		c.setMinimumSize(new Dimension(x, y));
+		c.setMaximumSize(new Dimension(x, y));
+		c.setPreferredSize(new Dimension(x, y));
+	}
+	
+	public PanelConceptos(VentanaPrincipal w) {
+		
+		this.window = w;
+		controlador = Controlador.getUnicaInstancia();
+
+		JLabel rotuloGastoPerso = new JLabel(" 00-19 - Gastos de Personal ", SwingConstants.CENTER);
+		JLabel rotuloGastoOficina = new JLabel(" 20-99 - Gastos de Oficina    ", SwingConstants.CENTER);
+		Font font1 = new Font("Arial", Font.BOLD, 18);
+		rotuloGastoPerso.setFont(font1);
+		rotuloGastoOficina.setFont(font1);
+		
+		textoCD = new JTextField();
+		fixedSize(textoCD, 25, 24);
+		textoDescrip = new JTextField();
+		fixedSize(textoDescrip, 475, 24);
+	
+		confirmarButton = new JButton("Confirmar");
+		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
+		confirmarButton.addActionListener(this);
+		cancelarButton = new JButton("Cancelar");
+		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
+		cancelarButton.addActionListener(this);
+		
+		JPanel panelCentral = new JPanel();
+		JPanel panel1 = new JPanel();
+		JPanel panel2 = new JPanel();
+		JPanel panel3 = new JPanel();
+		JPanel panel4 = new JPanel();
+		JPanel panel5 = new JPanel();
+		
+		modelo = new ModeloTablaConceptos();
+		tabla = new JTable(modelo);
+		tabla.setFillsViewportHeight(true);
+		scrollPane = new JScrollPane(tabla);
+		scrollPane.setPreferredSize(new Dimension(100, 50));
+		scrollPane.setMaximumSize(new Dimension(500, 350));
+		tabla.setCellSelectionEnabled(false);
+		tabla.setRowSelectionAllowed(true);
+		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		TableColumn columna = tabla.getColumn("CD");
+		columna.setMaxWidth(25);
+		
+		ListSelectionModel cellSelectionModel = tabla.getSelectionModel();
+		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				actualizarTexto();
+			}
+		});
+		
+		inicializarTabla();
+
+		panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
+		panel1.setBackground(new Color(0,255,255));
+		panel1.add(rotuloGastoPerso);
+
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+		panel2.setBackground(new Color(0,255,255));
+		panel2.add(rotuloGastoOficina);
+		
+		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
+		panel3.add(scrollPane);
+		
+		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
+		panel4.add(confirmarButton);
+		panel4.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel4.add(cancelarButton);
+		
+		panel5.setLayout(new BoxLayout(panel5, BoxLayout.X_AXIS));
+		panel5.add(textoCD);
+		panel5.add(textoDescrip);
+
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		panel1.setAlignmentX(LEFT_ALIGNMENT);
+		panel2.setAlignmentX(LEFT_ALIGNMENT);
+		panel3.setAlignmentX(LEFT_ALIGNMENT);
+		panel4.setAlignmentX(LEFT_ALIGNMENT);
+		panel5.setAlignmentX(LEFT_ALIGNMENT);
+
+		panelCentral.add(Box.createRigidArea(new Dimension(20, 20)));
+		panelCentral.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panelCentral.add(panel1);
+		panelCentral.add(Box.createRigidArea(new Dimension(5, 5)));
+		panelCentral.add(panel2);
+		panelCentral.add(Box.createRigidArea(new Dimension(5, 5)));
+		panelCentral.add(panel3);
+		panelCentral.add(panel5);
+		panelCentral.add(Box.createRigidArea(new Dimension(20,20)));
+		panelCentral.add(panel4);
+		
+		JPanel pCentral = new JPanel();
+		JPanel pNorte = new JPanel();
+		JPanel pEste = new JPanel();
+		JPanel pSur = new JPanel();
+		JPanel pOeste = new JPanel();
+
+		pCentral.setLayout(new BoxLayout(pCentral, BoxLayout.Y_AXIS));
+		pCentral.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pCentral.add(panelCentral);
+
+		JLabel rotuloSuperior = new JLabel("MANTENIMIENTO DE CONCEPTOS", SwingConstants.CENTER);
+		Font font = new Font("Arial", Font.BOLD, 30);
+		rotuloSuperior.setFont(font);
+		pNorte.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pNorte.add(rotuloSuperior);
+		pNorte.setBorder(BorderFactory.createLineBorder(Color.black));
+
+		setLayout(new BorderLayout(10, 10));
+		add(pNorte, BorderLayout.NORTH);
+		pOeste.add(Box.createRigidArea(new Dimension(100, 100)));
+		add(pOeste, BorderLayout.WEST);
+
+		add(pCentral, BorderLayout.CENTER);
+
+		pEste.add(Box.createRigidArea(new Dimension(100, 100)));
+		add(pEste, BorderLayout.EAST);
+
+		pSur.add(Box.createRigidArea(new Dimension(50, 50)));
+		add(pSur, BorderLayout.SOUTH);
+		
+	}
+	
+	public void inicializarTabla() {
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCCNP", "");
+			int concepto = 0;
+			String descrip;
+			while (rs.next()) {
+				concepto = Integer.parseInt(rs.getString("CONCEPTO"));
+				descrip = rs.getString("DESCRIPCION");
+				modelo.addFila(concepto, descrip);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void actualizarTexto() {
+		int filaSeleccionada = tabla.getSelectedRow();
+		if (filaSeleccionada != -1) {
+			int concepto = modelo.getCDSeleccionado(filaSeleccionada);
+			String descrip = modelo.getDescripcionSeleccionado(filaSeleccionada);
+			textoCD.setText(Integer.toString(concepto));
+			textoDescrip.setText(descrip);
+		}
+
+	}
+	
+	public void guardarCambios(){
+		String concepto = textoCD.getText();
+		String descrip = textoDescrip.getText();
+		int control = 0;
+		textoCD.setBackground(new Color(255,255,255));
+		textoDescrip.setBackground(new Color(255,255,255));
+		if (concepto.compareTo("") == 0) {
+			textoCD.setBackground(new Color(255,153,153));
+			control = 1;
+		}
+		if (descrip.compareTo("") == 0) {
+			textoDescrip.setBackground(new Color(255,153,153));
+			control = 1;
+		}
+		if (control == 0)
+			try {
+				if (conceptoDisponible(concepto)) {
+					String str = "('" + concepto + "','" + descrip + "')";
+					controlador.setStatementInsert("CTCCNP", "(CONCEPTO,DESCRIPCION)", str);
+				} else {
+					String str1 = "DESCRIPCION='" + descrip+"'";
+					String str2 = "CONCEPTO='" + concepto+"'";
+					controlador.setStatementUpdate("CTCCNP", str1, str2);
+				}
+				vaciarTabla();
+				inicializarTabla();
+				textoDescrip.setText("");
+				textoCD.setText("");
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	}
+
+	public boolean conceptoDisponible(String concepto){
+		String str = "CONCEPTO='" + concepto + "'";
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCCNP", str);
+			if (rs.first())
+				return false;
+			else
+				return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void vaciarTabla() {
+		while (modelo.getRowCount() > 0)
+			modelo.removeRow(0);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == confirmarButton) {
+			guardarCambios();
+		} else if (e.getSource() == cancelarButton) {
+			window.setPanelInicial();
+		}
+
+	}
+}

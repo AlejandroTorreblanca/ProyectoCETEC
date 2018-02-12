@@ -26,6 +26,7 @@ public class PanelInicial extends JPanel implements ActionListener{
 	private JButton conceptosButton;
 	private JButton coeficientesButton;
 	private JButton movimientosButton;
+	private JButton aux;
 	
 	public PanelInicial(VentanaPrincipal w) {
 		
@@ -49,6 +50,10 @@ public class PanelInicial extends JPanel implements ActionListener{
 		movimientosButton = new JButton("Mantenimiento de Movimientos");
 		movimientosButton.setMargin(new Insets(2, 75, 2, 75));
 		movimientosButton.addActionListener(this);
+		
+		aux = new JButton("Consulta de Movimientos");
+		aux.setMargin(new Insets(2, 92, 2, 92));
+		aux.addActionListener(this);
 		
 		JPanel pNorte = new JPanel();
 		JPanel pEste = new JPanel();
@@ -75,7 +80,9 @@ public class PanelInicial extends JPanel implements ActionListener{
 		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
 		pCentro.add(coeficientesButton); 
 		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
-		pCentro.add(movimientosButton);  
+		pCentro.add(movimientosButton); 
+		pCentro.add(Box.createRigidArea(new Dimension(15, 15)));
+		pCentro.add(aux); 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(pNorte, BorderLayout.NORTH);
 		pOeste.add(Box.createRigidArea(new Dimension(100, 100)));
@@ -99,12 +106,15 @@ public class PanelInicial extends JPanel implements ActionListener{
 			window.setPanelTrabajos();
 		}
 		else if (e.getSource()== conceptosButton){
-//			window.setPanelOperario();
+			window.setPanelCoenceptos();
 		}
 		else if (e.getSource()== coeficientesButton){
 			window.setPanelCoeficientes();
 		}
 		else if (e.getSource()== movimientosButton){
+			window.setPanelaux();
+		}
+		else if (e.getSource()== aux){
 			window.setPanelMovimientos();
 		}
 	}

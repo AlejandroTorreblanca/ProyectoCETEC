@@ -236,7 +236,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		panel8.setAlignmentX(LEFT_ALIGNMENT);
 
 		panelCentral.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panelCentral.add(Box.createRigidArea(new Dimension(25, 25)));
+		panelCentral.add(Box.createRigidArea(new Dimension(50, 50)));
 		panelCentral.add(panel1);
 		panelCentral.add(panel2);
 		panelCentral.add(panel3);

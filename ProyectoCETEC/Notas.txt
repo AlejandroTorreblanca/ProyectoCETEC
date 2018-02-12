@@ -1,1 +1,11 @@
 mantenimiento trabajos: codigo establecido por usuario o por máquina?
+
+Limitar a 4 digitosç
+
+Boton menu principal
+
+dos decimales
+
+apracer movimientos directamente
+
+añadir Estatus ptrabajo

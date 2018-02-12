@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;GeneratePDFFileIText.java&apos; to &apos;ProyectoCETEC/src/utilidades&apos;&#x0D;&#x0A;- Original project: &apos;PruebasSwing&apos;&#x0D;&#x0A;- Destination element: &apos;ProyectoCETEC/src/utilidades&apos;&#x0D;&#x0A;- Original element: &apos;GeneratePDFFileIText.java&apos;" description="Copy compilation unit" destination="=ProyectoCETEC/src&lt;utilidades" element1="/src&lt;{GeneratePDFFileIText.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1518455504855" units="1" version="1.0"/>
+</session>

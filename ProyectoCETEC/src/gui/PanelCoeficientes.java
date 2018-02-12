@@ -29,6 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 
 import controlador.Controlador;
 
@@ -64,9 +65,9 @@ public class PanelCoeficientes extends JPanel implements ActionListener {
 		fixedSize(textoAño, 50, 24);
 		textoAño.setEditable(false);
 		textoPersonal = new JTextField();
-		fixedSize(textoPersonal, 100, 24);
+		fixedSize(textoPersonal, 75, 24);
 		textoOficina = new JTextField();
-		fixedSize(textoOficina, 100, 24);
+		fixedSize(textoOficina, 75, 24);
 
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
@@ -85,10 +86,16 @@ public class PanelCoeficientes extends JPanel implements ActionListener {
 		tabla.setFillsViewportHeight(true);
 		scrollPane = new JScrollPane(tabla);
 		scrollPane.setPreferredSize(new Dimension(100, 50));
-		scrollPane.setMaximumSize(new Dimension(300, 350));
+		scrollPane.setMaximumSize(new Dimension(200, 350));
 		tabla.setCellSelectionEnabled(false);
 		tabla.setRowSelectionAllowed(true);
 		tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		TableColumn columna = tabla.getColumn("Año");
+		columna.setMaxWidth(50);
+		columna = tabla.getColumn("Personal");
+		columna.setMaxWidth(75);
+		columna = tabla.getColumn("Oficina");
+		columna.setMaxWidth(75);
 
 		ListSelectionModel cellSelectionModel = tabla.getSelectionModel();
 		cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -163,12 +170,11 @@ public class PanelCoeficientes extends JPanel implements ActionListener {
 			maxFilas = 0;
 			ResultSet rs = controlador.setStatementSelect("CTCCOE", "");
 			int año = 0;
-			String personal, oficina;
 			while (rs.next()) {
 				año = rs.getInt("AÑO");
-				personal = rs.getString("PERSONAL");
-				oficina = rs.getString("OFICINA");
-				modelo.addFila(año, personal, oficina);
+				double value1 = Double.parseDouble(rs.getString("PERSONAL"));
+				double value2 = Double.parseDouble(rs.getString("OFICINA"));
+				modelo.addFila(año, String.format("%.2f", value1), String.format("%.2f", value2));
 				maxFilas++;
 			}
 			modelo.addFila(año + 1, "", "");
@@ -195,47 +201,50 @@ public class PanelCoeficientes extends JPanel implements ActionListener {
 
 	}
 
+	public void guardarCambios(){
+		String año = textoAño.getText();
+		String personal = textoPersonal.getText();
+		String oficina = textoOficina.getText();
+		int control = 0;
+		textoAño.setBackground(new Color(255,255,255));
+		textoPersonal.setBackground(new Color(255,255,255));
+		textoOficina.setBackground(new Color(255,255,255));
+		if (año.compareTo("") == 0) {
+			textoAño.setBackground(new Color(255,153,153));
+			control = 1;
+		}
+		if (personal.compareTo("") == 0) {
+			textoPersonal.setBackground(new Color(255,153,153));
+			control = 1;
+		}
+
+		if (oficina.compareTo("") == 0) {
+			textoOficina.setBackground(new Color(255,153,153));
+			control = 1;
+		}
+		if (control == 0)
+			try {
+				if (año.compareTo(añoLibre) != 0) {
+					String str1 = "PERSONAL=" + personal + ",OFICINA=" + oficina;
+					String str2 = "AÑO=" + año;
+					controlador.setStatementUpdate("CTCCOE", str1, str2);
+				} else {
+					String str = "('" + año + "','" + personal + "','" + oficina + "')";
+					controlador.setStatementInsert("CTCCOE", "(AÑO,PERSONAL,OFICINA)", str);
+				}
+				vaciarTabla();
+				inicializarTabla();
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == confirmarButton) {
-			String año = textoAño.getText();
-			String personal = textoPersonal.getText();
-			String oficina = textoOficina.getText();
-			int control = 0;
-			textoAño.setBackground(new Color(255,255,255));
-			textoPersonal.setBackground(new Color(255,255,255));
-			textoOficina.setBackground(new Color(255,255,255));
-			if (textoAño.getText().compareTo("") == 0) {
-				textoAño.setBackground(new Color(255,153,153));
-				control = 1;
-			}
-			if (textoPersonal.getText().compareTo("") == 0) {
-				textoPersonal.setBackground(new Color(255,153,153));
-				control = 1;
-			}
-
-			if (textoOficina.getText().compareTo("") == 0) {
-				textoOficina.setBackground(new Color(255,153,153));
-				control = 1;
-			}
-			if (control == 0)
-				try {
-					if (año.compareTo(añoLibre) != 0) {
-						String str1 = "PERSONAL=" + personal + ",OFICINA=" + oficina;
-						String str2 = "AÑO=" + año;
-						controlador.setStatementUpdate("CTCCOE", str1, str2);
-					} else {
-						String str = "('" + año + "','" + personal + "','" + oficina + "')";
-						controlador.setStatementInsert("CTCCOE", "(AÑO,PERSONAL,OFICINA)", str);
-					}
-					vaciarTabla();
-					inicializarTabla();
-
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
+			guardarCambios();
 		} else if (e.getSource() == cancelarButton) {
 			window.setPanelInicial();
 		}

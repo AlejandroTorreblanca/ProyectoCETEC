@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="SimpleDateFormat" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="calendar"/>
-			<item value="ctcpre"/>
-			<item value="DNI/CIF"/>
-			<item value="actualizarPlantilla"/>
-			<item value="setStatementSelect"/>
-			<item value="ss"/>
-			<item value="package gui;"/>
-			<item value="setPanelInicial"/>
+			<item value="SimpleDateFormat"/>
+			<item value="format"/>
+			<item value="year"/>
+			<item value="datefor"/>
+			<item value="xMov.setText"/>
+			<item value="calend"/>
+			<item value="calen"/>
+			<item value="CALEnd"/>
 		</list>
 		<list key="replacehistory">
 		</list>
